@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viruez Trading Academy</title>
+<style>
+  :root{
+    --cream:#FBF3E3;
+    --ink:#21314D;
+    --coral:#FF6B5B;
+    --teal:#2EC4B6;
+    --sun:#FFC857;
+    --grass:#3DA35D;
+    --paper:#FFFFFF;
+    --line:#E4D9C2;
+    --shadow: 0 6px 0 rgba(33,49,77,0.15);
+  }
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001s !important; transition-duration:0.001s !important;}
+  }
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle, var(--line) 1.4px, transparent 1.4px) 0 0/22px 22px,
+      var(--cream);
+    color:var(--ink);
+    font-family: ui-rounded, "Segoe UI Rounded", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3{font-weight:800; letter-spacing:-0.02em; margin:0;}
+  button{font-family:inherit; cursor:pointer;}
+  button:focus-visible, [tabindex]:focus-visible{outline:3px solid var(--ink); outline-offset:2px;}
+  #app{max-width:720px; margin:0 auto; padding:14px 16px 60px;}
+
+  /* ---------- Top bar ---------- */
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px;}
+  .brand{display:flex; align-items:center; gap:8px;}
+  .brand .stamp{
+    width:40px;height:40px;border-radius:50%;background:var(--coral);
+    display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;
+    box-shadow:var(--shadow);
+  }
+  .brand h1{font-size:19px;}
+  .brand p{margin:0;font-size:11px;color:#6b7690;font-weight:600;}
+  .starchip{
+    background:var(--paper); border:2px solid var(--ink); border-radius:999px;
+    padding:6px 12px; font-weight:800; font-size:14px; display:flex; gap:6px; align-items:center;
+    box-shadow:var(--shadow);
+  }
+  .backbtn{
+    background:var(--paper); border:2px solid var(--ink); border-radius:12px;
+    padding:8px 12px; font-weight:800; box-shadow:var(--shadow); font-size:14px;
+  }
+  .backbtn:active{transform:translateY(3px); box-shadow:none;}
+
+  /* ---------- Home / map ---------- */
+  .hero{text-align:center; margin:6px 0 20px;}
+  .hero h2{font-size:24px;}
+  .hero p{margin:6px 0 0; color:#5b6580; font-size:14px; font-weight:600;}
+  .map{position:relative; padding:10px 0 10px;}
+  .pathline{position:absolute; left:50%; top:0; bottom:0; width:6px; transform:translateX(-50%);
+    background-image: linear-gradient(var(--ink) 60%, transparent 0%);
+    background-position: top; background-size: 6px 18px; background-repeat: repeat-y;
+    opacity:0.25; border-radius:3px;}
+  .worldnode{position:relative; display:flex; align-items:center; gap:16px; margin:0 0 26px;}
+  .worldnode:nth-child(even){flex-direction:row-reverse; text-align:right;}
+  .nodebtn{
+    width:84px;height:84px;border-radius:50%; flex:none; position:relative;
+    border:4px solid var(--ink); font-size:34px; display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow); background:var(--paper);
+  }
+  .nodebtn.unlocked{background:var(--world-color); }
+  .nodebtn.locked{background:#E9E3D4; color:#a39c89; filter:grayscale(1); opacity:0.8;}
+  .nodebtn:active.unlocked{transform:translateY(3px); box-shadow:none;}
+  .nodecard{flex:1; background:var(--paper); border:2px solid var(--ink); border-radius:16px; padding:10px 14px; box-shadow:var(--shadow);}
+  .nodecard h3{font-size:15px;}
+  .nodecard .progress{font-size:12px; font-weight:700; color:#6b7690; margin-top:4px;}
+  .lockmsg{font-size:11px; color:#a36a3a; font-weight:700; margin-top:4px;}
+
+  /* ---------- Repaso inteligente / método ---------- */
+  .reviewcard{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    background:var(--ink); color:#fff; border-radius:18px; padding:14px 16px; margin-bottom:10px;
+    box-shadow:var(--shadow);
+  }
+  .reviewleft{display:flex; align-items:center; gap:10px;}
+  .reviewicon{font-size:28px;}
+  .reviewcard h3{font-size:15px; color:#fff;}
+  .reviewcard p{margin:2px 0 0; font-size:12px; font-weight:600; color:#cdd3e3;}
+  .reviewright{display:flex; align-items:center; gap:10px;}
+  .streak{font-weight:800; font-size:14px;}
+  .reviewbtn{background:var(--sun); border:none; border-radius:10px; padding:10px 16px; font-weight:800; font-size:13px; color:var(--ink); box-shadow:0 4px 0 rgba(0,0,0,0.3);}
+  .reviewbtn:active{transform:translateY(3px); box-shadow:none;}
+  .reviewbtn[disabled]{opacity:0.4; cursor:not-allowed;}
+  .infobtn{
+    display:block; width:100%; background:transparent; border:2px dashed var(--ink); border-radius:12px;
+    padding:8px; font-weight:700; font-size:12px; color:var(--ink); margin-bottom:18px; opacity:0.75;
+  }
+  .mixedbtn{
+    margin-top:10px; background:#fff; border:2px solid var(--ink); border-radius:10px; padding:8px 12px;
+    font-weight:800; font-size:12.5px; box-shadow:0 4px 0 rgba(33,49,77,0.15);
+  }
+  .mixedbtn:active{transform:translateY(3px); box-shadow:none;}
+
+  /* ---------- Pomodoro ---------- */
+  .pomocard{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    background:var(--coral); color:#fff; border:3px solid var(--ink); border-radius:18px; padding:14px 16px; margin-bottom:18px;
+    box-shadow:var(--shadow);
+  }
+  .pomocard h3{font-size:15px; color:#fff;}
+  .pomocard p{margin:2px 0 0; font-size:12px; font-weight:600; color:#fff0ee;}
+  .pomobtn{background:var(--ink); color:#fff; border:none; border-radius:10px; padding:10px 16px; font-weight:800; font-size:13px; box-shadow:0 4px 0 rgba(0,0,0,0.3);}
+  .pomobtn:active{transform:translateY(3px); box-shadow:none;}
+  .durationrow{display:flex; gap:10px; justify-content:center; margin:14px 0;}
+  .durbtn{flex:1; padding:14px 6px; border-radius:12px; border:2px solid var(--ink); background:#fff; font-weight:800; box-shadow:0 4px 0 rgba(33,49,77,0.15);}
+  .durbtn:active{transform:translateY(3px); box-shadow:none;}
+  .pomotimerwrap{text-align:center; margin-bottom:10px;}
+  #pomotimer{font-size:40px; font-weight:800; letter-spacing:1px;}
+  .pomolabel{font-size:12px; font-weight:700; color:#6b7690;}
+  .breakwrap{text-align:center; padding:30px 10px;}
+  .breakwrap .bigicon{font-size:54px;}
+  #breaktimer{font-size:46px; font-weight:800; margin:14px 0;}
+
+  /* ---------- Enséñale a Leo ---------- */
+  .teachcard{background:var(--paper); border:3px solid var(--ink); border-radius:18px; padding:18px; box-shadow:var(--shadow); text-align:center;}
+  .leoicon{font-size:48px;}
+  .teachword{font-size:16px; font-weight:700; margin:6px 0 2px;}
+  .teachhint{font-size:12.5px; color:#6b7690; font-weight:600; margin-bottom:10px;}
+  .teachcard textarea{width:100%; border:2px solid var(--ink); border-radius:12px; padding:10px; font-family:inherit; font-size:14px; resize:vertical;}
+  .leobubble{margin-top:12px; background:var(--sun); border:2px solid var(--ink); border-radius:14px; padding:12px; text-align:left; font-weight:600; font-size:13.5px;}
+  .leobubble-err{background:#FBE5E0;}
+
+  /* Gráficos en vivo */
+  .chartcontrols{margin-bottom:10px;}
+  .chartcontrols select{width:100%; border:2px solid var(--ink); border-radius:12px; padding:10px; font-size:14px; font-family:inherit; background:#fff;}
+  .tvchart{height:420px; border:2px solid var(--ink); border-radius:14px; overflow:hidden; background:#131722;}
+  .chartnote{font-size:12px; color:#6b7690; font-weight:600; margin-top:10px;}
+  .chartfallback{padding:20px; text-align:center; color:#8a93ab; font-weight:700;}
+
+  /* Formularios genéricos (Practica/Diario/Calculadora) */
+  .formlabel{display:block; font-size:12px; font-weight:800; margin:10px 0 4px;}
+  .teachcard input[type="text"], .teachcard input[type="number"], .teachcard select, .teachcard textarea{
+    width:100%; border:2px solid var(--ink); border-radius:10px; padding:9px 10px; font-size:14px; font-family:inherit; background:#fff;
+  }
+  .chartpreview{width:100%; border-radius:10px; margin-top:8px; border:2px solid var(--ink);}
+
+  /* Diario de trading */
+  .journalentry{background:var(--paper); border:2px solid var(--ink); border-radius:14px; padding:12px; margin-bottom:10px; text-align:left; box-shadow:var(--shadow);}
+  .je-head{display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-size:14px;}
+  .je-dir{font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; background:#eee;}
+  .je-result{font-size:11px; font-weight:800; padding:2px 8px; border-radius:999px; text-transform:capitalize;}
+  .je-r-ganancia{background:#DFF3E6; color:var(--grass);}
+  .je-r-pérdida{background:#FBE5E0; color:var(--coral);}
+  .je-r-aprendizaje{background:#FFF3D6; color:#9a7b1f;}
+  .je-date{font-size:11px; color:#8a93ab; font-weight:700; margin-bottom:6px;}
+  .journalentry p{font-size:12.5px; margin:4px 0;}
+  .je-delete{margin-top:6px; background:none; border:none; color:var(--coral); font-size:11px; font-weight:700;}
+
+  /* Calculadora de riesgo */
+  .rc-result{margin-top:14px; background:rgba(33,49,77,0.05); border-radius:12px; padding:12px;}
+  .rc-line{display:flex; justify-content:space-between; font-size:13.5px; padding:4px 0;}
+
+  /* Glosario */
+  .glosearch{width:100%; border:2px solid var(--ink); border-radius:12px; padding:12px; font-size:14px; font-family:inherit; margin-bottom:14px;}
+  .glomodule{font-size:11px; font-weight:800; color:#8a93ab; text-transform:uppercase; letter-spacing:0.03em; margin:14px 0 6px;}
+  .gloterm{background:var(--paper); border:2px solid var(--ink); border-radius:14px; padding:12px; margin-bottom:10px; box-shadow:var(--shadow);}
+  .gloterm b{font-size:15px;}
+  .gloterm p{font-size:13px; margin:4px 0;}
+  .gloex{font-style:italic; color:#6b7690;}
+
+  /* ---------- World screen ---------- */
+  .worldbanner{
+    background:var(--world-color); border:3px solid var(--ink); border-radius:18px;
+    padding:16px 18px; color:#1c2238; margin-bottom:16px; box-shadow:var(--shadow);
+  }
+  .worldbanner h2{font-size:20px;}
+  .worldbanner p{margin:4px 0 0; font-weight:700; font-size:13px; opacity:0.85;}
+  .blockcard{
+    background:var(--paper); border:2px solid var(--ink); border-radius:16px;
+    padding:14px; margin-bottom:14px; box-shadow:var(--shadow); position:relative;
+  }
+  .blockcard.locked{opacity:0.55;}
+  .blockhead{display:flex; justify-content:space-between; align-items:flex-start; gap:8px;}
+  .blockhead h3{font-size:16px;}
+  .blockhead .weeks{font-size:11px; color:#6b7690; font-weight:700;}
+  .blockstars{font-size:14px; font-weight:800; white-space:nowrap;}
+  .gamerow{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
+  .gamebtn{
+    flex:1; min-width:96px; border:2px solid var(--ink); border-radius:12px; padding:10px 6px;
+    background:#fff; font-weight:800; font-size:12.5px; text-align:center; box-shadow:0 4px 0 rgba(33,49,77,0.15);
+  }
+  .gamebtn:active{transform:translateY(3px); box-shadow:none;}
+  .gamebtn .ic{font-size:20px; display:block; margin-bottom:2px;}
+  .gamebtn[disabled]{opacity:0.4; cursor:not-allowed;}
+  .locklabel{position:absolute; top:10px; right:14px; font-size:18px;}
+
+  /* ---------- Game shell ---------- */
+  .gameheader{margin-bottom:14px;}
+  .gameheader h2{font-size:18px;}
+  .bar{height:10px; background:#fff; border:2px solid var(--ink); border-radius:999px; overflow:hidden; margin-top:8px;}
+  .bar > div{height:100%; background:var(--teal);}
+
+  /* Flashcards */
+  .flashwrap{display:flex; flex-direction:column; align-items:center; gap:16px;}
+  .flashcounter{font-weight:800; font-size:13px; color:#6b7690;}
+  .flashcard{
+    width:100%; max-width:340px; height:420px; perspective:1200px;
+  }
+  .flashinner{position:relative; width:100%; height:100%; transition:transform .5s; transform-style:preserve-3d;}
+  .flashcard.flipped .flashinner{transform:rotateY(180deg);}
+  .flashface{
+    position:absolute; inset:0; backface-visibility:hidden; border:3px solid var(--ink); border-radius:20px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; padding:18px; text-align:center;
+    box-shadow:var(--shadow);
+  }
+  .flashfront{background:var(--paper);}
+  .flashback{background:var(--sun); transform:rotateY(180deg);}
+  .flashfront .en{font-size:28px; font-weight:800;}
+  .flashfront .hint{margin-top:10px; font-size:12px; color:#8a93ab; font-weight:700;}
+  .flashback .es{font-size:24px; font-weight:800;}
+  .flashback .ex{margin-top:10px; font-size:13px; font-weight:600; font-style:italic;}
+  .mnemobox{margin-top:10px; font-size:11.5px; font-weight:600; background:rgba(33,49,77,0.08); border-radius:10px; padding:8px 10px; max-width:280px;}
+  .mnemobox.mnemo-own{position:relative; padding-right:28px;}
+  .mnemoedit{position:absolute; top:4px; right:6px; background:none; border:none; font-size:13px; padding:2px;}
+  .mnemobox.mnemo-empty input{width:100%; border:1px solid var(--ink); border-radius:8px; padding:6px 8px; font-size:12px; margin-bottom:6px; font-family:inherit;}
+  .mnemobox.mnemo-empty button{width:100%; background:var(--ink); color:#fff; border:none; border-radius:8px; padding:6px; font-weight:800; font-size:11.5px;}
+
+  /* Diagramas ilustrativos */
+  .diagrambox{margin-top:10px; background:rgba(33,49,77,0.05); border-radius:12px; padding:8px; max-width:280px;}
+  .diagram-svg{width:100%; height:auto; display:block;}
+  .diagram-caption{font-size:10px; font-weight:700; color:#8a93ab; text-align:center; margin-top:4px;}
+
+  /* Herramientas (grid) */
+  .toolsgrid{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
+  .toolcard{
+    background:var(--paper); border:2px solid var(--ink); border-radius:14px; padding:14px 10px;
+    display:flex; flex-direction:column; align-items:center; text-align:center; gap:3px;
+    box-shadow:0 4px 0 rgba(33,49,77,0.15); font-weight:800; font-size:12.5px;
+  }
+  .toolcard:active{transform:translateY(3px); box-shadow:none;}
+  .toolcard .ic{font-size:24px;}
+  .toolcard .toolsub{font-size:10px; font-weight:600; color:#8a93ab;}
+
+  /* Speaker button */
+  .speakbtn{background:var(--ink); color:#fff; border:none; border-radius:50%; width:34px; height:34px; font-size:15px; margin-top:6px; box-shadow:0 3px 0 rgba(0,0,0,0.3);}
+  .speakbtn:active{transform:translateY(2px); box-shadow:none;}
+
+  /* Modo Escribir */
+  .writecard{background:var(--paper); border:3px solid var(--ink); border-radius:18px; padding:20px; box-shadow:var(--shadow); text-align:center;}
+  .writecard .w-es{font-size:24px; font-weight:800; margin:6px 0;}
+  .writecard .w-ex{font-size:13px; font-weight:600; font-style:italic; color:#6b7690; margin-bottom:14px;}
+  .writecard input{width:100%; border:2px solid var(--ink); border-radius:12px; padding:12px; font-size:18px; text-align:center; font-family:inherit;}
+  .writecard input.correct{background:#DFF3E6; border-color:var(--grass);}
+  .writecard input.wrong{background:#FBE5E0; border-color:var(--coral);}
+  .writefeedback{margin-top:10px; font-weight:800; font-size:14px;}
+  .writefeedback.ok{color:var(--grass);}
+  .writefeedback.bad{color:var(--coral);}
+  .flashbtns{display:flex; gap:10px; width:100%; max-width:340px;}
+  .flashbtns button{flex:1; padding:12px; border-radius:12px; border:2px solid var(--ink); font-weight:800; box-shadow:0 4px 0 rgba(33,49,77,0.15);}
+  .flashbtns button:active{transform:translateY(3px); box-shadow:none;}
+  .btn-know{background:var(--grass); color:#fff;}
+  .btn-learn{background:var(--coral); color:#fff;}
+
+  .ratebtns{display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100%; max-width:340px;}
+  .ratebtn{padding:12px 6px; border-radius:12px; border:2px solid var(--ink); font-weight:800; font-size:12.5px; box-shadow:0 4px 0 rgba(33,49,77,0.15); color:#fff;}
+  .ratebtn:active{transform:translateY(3px); box-shadow:none;}
+  .rate-again{background:#D64545;}
+  .rate-hard{background:#E08A2E;}
+  .rate-good{background:var(--teal);}
+  .rate-easy{background:var(--grass);}
+
+  /* Memory match */
+  .memgrid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:8px;}
+  .memcard{
+    aspect-ratio:1/1; border:2px solid var(--ink); border-radius:10px; background:var(--teal);
+    display:flex; align-items:center; justify-content:center; text-align:center; padding:4px;
+    font-weight:800; font-size:11.5px; color:#fff; box-shadow:0 3px 0 rgba(33,49,77,0.15);
+  }
+  .memcard.faceup{background:#fff; color:var(--ink);}
+  .memcard.matched{background:var(--sun); color:var(--ink); opacity:0.9;}
+  .memstats{display:flex; gap:14px; font-weight:800; font-size:13px; margin-top:10px;}
+
+  /* Quiz */
+  .quizcard{background:var(--paper); border:3px solid var(--ink); border-radius:18px; padding:20px; box-shadow:var(--shadow); text-align:center;}
+  .quizcard .q-en{font-size:26px; font-weight:800; margin-bottom:4px;}
+  .quizcard .q-sub{font-size:12px; color:#8a93ab; font-weight:700; margin-bottom:14px;}
+  .options{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px;}
+  .optbtn{padding:14px 8px; border:2px solid var(--ink); border-radius:12px; background:#fff; font-weight:800; font-size:14px; box-shadow:0 4px 0 rgba(33,49,77,0.15);}
+  .optbtn:active{transform:translateY(3px); box-shadow:none;}
+  .optbtn.correct{background:var(--grass); color:#fff;}
+  .optbtn.wrong{background:var(--coral); color:#fff;}
+
+  /* Result modal */
+  .overlay{position:fixed; inset:0; background:rgba(33,49,77,0.55); display:flex; align-items:center; justify-content:center; padding:20px; z-index:50;}
+  .resultcard{background:var(--paper); border:3px solid var(--ink); border-radius:22px; padding:28px 22px; text-align:center; max-width:320px; box-shadow:var(--shadow);}
+  .resultcard .stars{font-size:38px; margin:10px 0;}
+  .resultcard h2{font-size:20px;}
+  .resultcard p{font-weight:700; color:#5b6580; font-size:14px;}
+  .resultbtn{margin-top:14px; background:var(--ink); color:#fff; border:none; border-radius:12px; padding:12px 20px; font-weight:800; font-size:14px; box-shadow:0 4px 0 rgba(0,0,0,0.25);}
+  .resultbtn:active{transform:translateY(3px); box-shadow:none;}
+
+  .empty{text-align:center; color:#8a93ab; font-weight:700; padding:30px 10px;}
+  .footnote{text-align:center; font-size:11px; color:#a39c89; font-weight:700; margin-top:24px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+/* ============== DATA ============== */
+const WORLDS = [
+  { id:'t1', name:'Fundamentos', subtitle:'Módulo 1 · Clases 1-3', icon:'🌱', color:'#3DA35D', need:0,
+    blocks:[
+      { id:'t1b1', title:'Historia del Dinero y el Trading', weeks:'Conceptos base', words:[
+        ['Trueque','Intercambiar bienes o servicios directamente, sin usar dinero.','Antes del dinero, la gente cambiaba arroz por frijol: eso era trueque.'],
+        ['Patrón oro','Sistema donde el valor del dinero estaba respaldado por oro físico.','Antes de 1971, el dólar estaba ligado al patrón oro.'],
+        ['Dinero fiat','Moneda sin respaldo físico; su valor depende de la confianza en quien la emite.','El dólar actual es dinero fiat, no está respaldado por oro.'],
+        ['Trading','Comprar y vender activos financieros buscando ganar con la diferencia de precio.','Hacer trading en Forex significa operar pares de divisas.'],
+        ['Trader','Persona que compra y vende activos financieros de forma activa.','Un trader profesional sigue un plan, no opera por emoción.'],
+        ['Análisis técnico','Estudiar los gráficos de precio para anticipar movimientos futuros.','El análisis técnico usa velas, indicadores y patrones.'],
+        ['Análisis fundamental','Estudiar noticias, economía y eventos para entender el valor de un activo.','El análisis fundamental mira tasas de interés e inflación.'],
+        ['Forex','Mercado mundial donde se intercambian divisas (pares de monedas).','Forex es el mercado financiero más grande del mundo.'],
+        ['Opciones binarias','Contrato donde se predice si el precio sube o baja en un tiempo fijo, con resultado de todo o nada.','En binarias, ganas un porcentaje fijo o pierdes la inversión.'],
+        ['Criptomonedas','Monedas digitales que funcionan sin un banco central, basadas en blockchain.','Bitcoin fue la primera criptomoneda.']
+      ]},
+      { id:'t1b2', title:'Estilos de Trading', weeks:'Conceptos base', words:[
+        ['Day trading','Estilo donde se abren y cierran operaciones el mismo día.','El day trader no deja posiciones abiertas durante la noche.'],
+        ['Swing trading','Estilo donde las operaciones duran varios días.','El swing trader busca movimientos de varios días o semanas.'],
+        ['Scalping','Estilo de operaciones muy rápidas, de segundos o minutos.','El scalper busca pequeñas ganancias muchas veces al día.'],
+        ['Posición','Una operación abierta en el mercado, ya sea de compra o de venta.','Tengo una posición abierta en EUR/USD desde ayer.'],
+        ['Entrada','El punto exacto donde decides abrir una operación.','Mi entrada fue justo en el soporte.'],
+        ['Salida','El punto donde decides cerrar una operación.','Mi salida fue en la resistencia siguiente.'],
+        ['Corrientes de trading','Las distintas escuelas o enfoques para analizar el mercado (técnico, fundamental, smart money, etc.).','Cada trader elige la corriente de trading con la que se siente más cómodo.']
+      ]}
+    ]
+  },
+  { id:'t2', name:'Gráficos y Velas', subtitle:'Módulo 2 · Análisis Técnico Clásico', icon:'🕯️', color:'#2EC4B6', need:4,
+    blocks:[
+      { id:'t2b1', title:'Velas y Tendencias', weeks:'Análisis técnico', words:[
+        ['Vela japonesa','Representación gráfica del precio en un periodo: apertura, cierre, máximo y mínimo.','Cada vela cuenta una historia de quién ganó, compradores o vendedores.'],
+        ['Tendencia alcista','Movimiento del precio donde los máximos y mínimos van subiendo.','En tendencia alcista, lo lógico es buscar compras.'],
+        ['Tendencia bajista','Movimiento del precio donde los máximos y mínimos van bajando.','En tendencia bajista, lo lógico es buscar ventas.'],
+        ['Mercado lateral','Cuando el precio se mueve dentro de un rango, sin tendencia clara.','En lateral, el precio rebota entre soporte y resistencia.'],
+        ['Soporte','Zona de precio donde la caída se detiene porque hay más compradores que vendedores.','El precio rebotó varias veces en el mismo soporte.'],
+        ['Resistencia','Zona de precio donde la subida se detiene porque hay más vendedores que compradores.','El precio chocó con la resistencia y bajó.']
+      ]},
+      { id:'t2b2', title:'Patrones y Fibonacci', weeks:'Análisis técnico', words:[
+        ['Retroceso de Fibonacci','Herramienta que mide niveles donde el precio podría corregir antes de seguir la tendencia.','El precio retrocedió al 61.8% de Fibonacci y rebotó.'],
+        ['Ruptura (breakout)','Cuando el precio rompe con fuerza un soporte o resistencia.','Tras la ruptura de la resistencia, el precio subió rápido.'],
+        ['Pullback','Regreso breve del precio hacia el nivel que acaba de romper, antes de seguir la dirección original.','Después del breakout, hubo un pullback al soporte roto.'],
+        ['Patrón de precio','Figura que se repite en el gráfico y que los traders usan para anticipar movimientos.','El patrón hombro-cabeza-hombro suele anticipar un cambio de tendencia.'],
+        ['Ondas (Elliott)','La forma en que el precio se mueve en impulsos y correcciones.','El precio se mueve en ondas de impulso y de corrección.']
+      ]}
+    ]
+  },
+  { id:'t3', name:'Indicadores', subtitle:'Módulo 3 · Herramientas del gráfico', icon:'📊', color:'#FFC857', need:9,
+    blocks:[
+      { id:'t3b1', title:'Indicadores Clásicos', weeks:'Indicadores', words:[
+        ['RSI','Índice de Fuerza Relativa: mide si un activo está sobrecomprado o sobrevendido.','Un RSI arriba de 70 sugiere sobrecompra.'],
+        ['Estocástico','Indicador que compara el precio de cierre con su rango reciente, para medir momentum.','El estocástico cruzó hacia arriba, señal de posible subida.'],
+        ['Bandas de Bollinger','Indicador que muestra la volatilidad del precio con tres líneas alrededor de una media.','Cuando las bandas se cierran mucho, suele venir un movimiento fuerte.'],
+        ['Volumen','Cantidad de operaciones realizadas en un periodo de tiempo.','Una ruptura con mucho volumen es más confiable.'],
+        ['Media móvil','Línea que suaviza el precio promediando los últimos periodos.','El precio cruzó por encima de la media móvil de 50.'],
+        ['Divergencia','Cuando el precio y un indicador se mueven en direcciones opuestas, anticipando un giro.','Hubo una divergencia entre el precio y el RSI antes de la caída.']
+      ]}
+    ]
+  },
+  { id:'t4', name:'Smart Money', subtitle:'Módulo 4 · Lo más avanzado', icon:'🧠', color:'#FF6B5B', need:13,
+    blocks:[
+      { id:'t4b1', title:'Order Blocks y Liquidez', weeks:'Smart Money Concepts', words:[
+        ['Order block','Última vela antes de un movimiento fuerte, que marca dónde entraron los grandes operadores.','El precio regresó al order block y rebotó con fuerza.'],
+        ['Zona de oferta','Área donde hay más vendedores que compradores, y el precio suele bajar.','El precio llegó a la zona de oferta y giró a la baja.'],
+        ['Zona de demanda','Área donde hay más compradores que vendedores, y el precio suele subir.','El precio rebotó justo en la zona de demanda.'],
+        ['Imbalance (FVG)','Desequilibrio entre compradores y vendedores que deja un hueco en el precio, el cual tiende a rellenarse.','El precio regresó a rellenar el imbalance antes de seguir subiendo.'],
+        ['Liquidez','Zonas donde se acumulan muchas órdenes (stops) que el mercado suele buscar antes de girar.','El precio barrió la liquidez debajo del mínimo antes de subir.']
+      ]},
+      { id:'t4b2', title:'Estructura y Manipulación', weeks:'Smart Money Concepts', words:[
+        ['Estructura de mercado','La secuencia de máximos y mínimos que define si el mercado sube, baja o está en rango.','Un cambio de estructura es la primera señal de que la tendencia puede cambiar.'],
+        ['Acumulación','Fase donde los grandes operadores compran poco a poco sin mover mucho el precio.','Antes de subir fuerte, el precio suele pasar por una fase de acumulación.'],
+        ['Distribución','Fase donde los grandes operadores venden poco a poco antes de una caída.','La distribución suele verse como un rango antes de una baja fuerte.'],
+        ['Manipulación','Movimiento falso del precio diseñado para atrapar traders antes del movimiento real.','Esa vela larga fue manipulación para barrer stops, antes de que el precio girara.']
+      ]}
+    ]
+  },
+  { id:'t5', name:'Operativa Real', subtitle:'Módulo 5 · Gestión de riesgo', icon:'🛡️', color:'#8B5CF6', need:17,
+    blocks:[
+      { id:'t5b1', title:'Brokers y Mecánica de Mercado', weeks:'Operativa', words:[
+        ['Broker','Empresa que te da acceso a la plataforma para comprar y vender en los mercados.','Eliges un broker regulado para operar con seguridad.'],
+        ['Pip','La unidad mínima de movimiento de precio en un par de divisas.','El EUR/USD subió 20 pips.'],
+        ['Lote','Tamaño estándar de una operación en Forex.','Un lote estándar equivale a 100,000 unidades de la divisa base.'],
+        ['Spread','Diferencia entre el precio de compra y el de venta que cobra el broker.','Entre menor el spread, menor el costo de operar.'],
+        ['Apalancamiento','Multiplicar el poder de tu capital para operar montos mayores; también multiplica el riesgo.','Con apalancamiento 1:100, $100 controlan $10,000 en el mercado.']
+      ]},
+      { id:'t5b2', title:'Gestión de Riesgo y Psicología', weeks:'Operativa', words:[
+        ['Stop loss','Orden automática que cierra la operación si el precio va en tu contra, para limitar pérdidas.','Siempre coloco mi stop loss antes de entrar a una operación.'],
+        ['Take profit','Orden automática que cierra la operación cuando se alcanza la ganancia deseada.','Mi take profit está en la siguiente resistencia.'],
+        ['Ratio riesgo-beneficio','Comparación entre cuánto arriesgas y cuánto puedes ganar en una operación.','Busco un ratio mínimo de 1 a 2: arriesgo 1 para ganar 2.'],
+        ['Plan de trading','Conjunto de reglas escritas que un trader sigue siempre, para no operar por impulso.','Mi plan de trading me dice exactamente cuándo entrar y cuándo salir.'],
+        ['Gestión de riesgo','Reglas para proteger tu capital y evitar perder más de lo planeado.','Nunca arriesgo más del 1-2% de mi cuenta en una sola operación.'],
+        ['Psicología del trading','El manejo de las emociones (miedo, codicia, ansiedad) al operar.','La psicología del trading es lo que más cuesta dominar, más que la técnica.'],
+        ['Drawdown','La caída del capital de una cuenta desde su punto más alto.','Tras varias pérdidas seguidas, mi cuenta tuvo un drawdown del 15%.']
+      ]}
+    ]
+  },
+  { id:'t6', name:'Contexto Macro', subtitle:'Módulo 6 · La economía detrás del precio', icon:'🌍', color:'#3B82F6', need:23,
+    blocks:[
+      { id:'t6b1', title:'Economía y Mercado Global', weeks:'Macro', words:[
+        ['Inflación','Pérdida del poder adquisitivo del dinero por la subida generalizada de precios.','Cuando hay mucha inflación, el dinero vale menos cada año.'],
+        ['Tasa de interés','Porcentaje que cobran o pagan los bancos centrales, y que mueve fuerte las divisas.','Cuando suben las tasas de interés, esa moneda suele fortalecerse.'],
+        ['Correlación','Relación entre dos activos: si se mueven en la misma dirección o en direcciones opuestas.','El oro y el dólar suelen tener correlación negativa.'],
+        ['Noticias económicas','Reportes que pueden mover fuerte el mercado en el momento que se publican.','El día de una noticia importante, el mercado se vuelve muy volátil.'],
+        ['Sesión de mercado','Horario en que abre cada mercado financiero del mundo (Asia, Londres, Nueva York).','La sesión de Londres y Nueva York es la más volátil para el EUR/USD.'],
+        ['Banco central','Institución que controla la política monetaria de un país (tasas, emisión de dinero).','La Reserva Federal (FED) es el banco central de Estados Unidos.']
+      ]}
+    ]
+  }
+];
+
+/* ============== STATE & STORAGE ============== */
+let progress = {}; // { blockId: { match: 0-3, quiz: 0-3 } }
+let storageReady = false;
+
+function blockProg(id){ const d = progress[id]||{}; return {match:d.match||0, quiz:d.quiz||0, write:d.write||0}; }
+function blockStars(id){ const p=blockProg(id); return Math.max(p.match,p.quiz,p.write); }
+function worldStars(w){ return w.blocks.reduce((s,b)=>s+blockStars(b.id),0); }
+function totalStars(){ return WORLDS.reduce((s,w)=>s+worldStars(w),0); }
+
+/* Almacenamiento universal: usa window.storage si está disponible (dentro de Claude),
+   y si no, usa localStorage del navegador (cuando la app corre en GitHub/Vercel). */
+async function storageGet(key){
+  try{
+    if(window.storage){ const r = await window.storage.get(key, false); return r ? r.value : null; }
+  }catch(e){}
+  try{ return localStorage.getItem('gga_'+key); }catch(e){ return null; }
+}
+async function storageSet(key, value){
+  try{
+    if(window.storage){ await window.storage.set(key, value, false); return; }
+  }catch(e){}
+  try{ localStorage.setItem('gga_'+key, value); }catch(e){}
+}
+
+async function loadProgress(){
+  try{ const v = await storageGet('gga-progress'); if(v) progress = JSON.parse(v); storageReady = true; }catch(e){ storageReady = false; }
+}
+async function saveProgress(){ await storageSet('gga-progress', JSON.stringify(progress)); }
+function setBlockResult(blockId, kind, stars){
+  const p = blockProg(blockId);
+  p[kind] = Math.max(p[kind], stars);
+  progress[blockId] = p;
+  saveProgress();
+}
+
+/* ---- Repetición espaciada (estilo Leitner, usado en investigación cognitiva) ---- */
+let srsData = {}; // { 'blockId::word': {box, due} }
+let meta = { streak:0, lastDate:null };
+const BOX_INTERVALS = [1,1,2,4,7,14,30]; // días de espera por caja (índice = caja)
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+function wordKey(blockId, word){ return blockId+'::'+word[0]; }
+
+async function loadSrs(){ try{ const v = await storageGet('gga-srs'); if(v) srsData = JSON.parse(v); }catch(e){} }
+async function saveSrs(){ await storageSet('gga-srs', JSON.stringify(srsData)); }
+async function loadMeta(){ try{ const v = await storageGet('gga-meta'); if(v) meta = JSON.parse(v); }catch(e){} }
+async function saveMeta(){ await storageSet('gga-meta', JSON.stringify(meta)); }
+let mnemoData = {}; // { wordKey: 'texto del truco creado por el usuario' }
+async function loadMnemo(){ try{ const v = await storageGet('gga-mnemo'); if(v) mnemoData = JSON.parse(v); }catch(e){} }
+async function saveMnemoData(){ await storageSet('gga-mnemo', JSON.stringify(mnemoData)); }
+function slug(s){ return s.replace(/[^a-zA-Z0-9]/g,'_'); }
+function mnemoBlockHtml(key, builtIn){
+  if(builtIn){
+    return `<div class="mnemobox mnemo-builtin">💡 <b>Truco:</b> ${builtIn}</div>`;
+  }
+  const own = mnemoData[key];
+  if(own){
+    return `<div class="mnemobox mnemo-own">💡 <b>Tu truco:</b> ${own}
+      <button class="mnemoedit" onclick="event.stopPropagation(); editMnemo('${slug(key)}')">✏️</button>
+    </div>`;
+  }
+  return `<div class="mnemobox mnemo-empty" onclick="event.stopPropagation();">
+    <div style="font-size:11px; font-weight:700; margin-bottom:4px;">💡 Inventa tu truco para no olvidarla:</div>
+    <input type="text" id="mi-${slug(key)}" placeholder="Ej: me suena a..." maxlength="80">
+    <button onclick="saveMnemo('${key.replace(/'/g,"\\'")}','${slug(key)}')">Guardar</button>
+  </div>`;
+}
+function saveMnemo(key, slugId){
+  const input = document.getElementById('mi-'+slugId);
+  if(!input || !input.value.trim()) return;
+  mnemoData[key] = input.value.trim();
+  saveMnemoData();
+  render();
+}
+function editMnemo(slugId){
+  const key = Object.keys(mnemoData).find(k=>slug(k)===slugId);
+  if(!key) return;
+  delete mnemoData[key];
+  saveMnemoData();
+  render();
+}
+function isDue(key){ const rec = srsData[key]; if(!rec) return true; return rec.due <= todayStr(); }
+function rateWord(key, rating){
+  const rec = srsData[key] || {box:0, due: todayStr()};
+  let box = rec.box;
+  if(rating==='again') box = 1;
+  else if(rating==='hard') box = Math.max(1, box);
+  else if(rating==='good') box = Math.min(box+1, 6);
+  else if(rating==='easy') box = Math.min(box+2, 6);
+  const due = new Date(); due.setDate(due.getDate()+BOX_INTERVALS[box]);
+  srsData[key] = { box, due: due.toISOString().slice(0,10) };
+  saveSrs();
+}
+function touchStreak(){
+  const today = todayStr();
+  if(meta.lastDate === today) return;
+  const y = new Date(); y.setDate(y.getDate()-1);
+  const yesterday = y.toISOString().slice(0,10);
+  meta.streak = (meta.lastDate === yesterday) ? (meta.streak||0)+1 : 1;
+  meta.lastDate = today;
+  saveMeta();
+}
+function unlockedBlocks(){
+  let res = [];
+  WORLDS.forEach(w=>{
+    if(totalStars() >= w.need){
+      w.blocks.forEach((b,i)=>{
+        const prevDone = i===0 || blockStars(w.blocks[i-1].id) >= 1;
+        if(prevDone) res.push({world:w, block:b});
+      });
+    }
+  });
+  return res;
+}
+function dueWords(){
+  let list = [];
+  unlockedBlocks().forEach(({world,block})=>{
+    block.words.forEach(word=>{
+      const key = wordKey(block.id, word);
+      if(isDue(key)) list.push({world, block, word, key});
+    });
+  });
+  return shuffle(list);
+}
+
+/* ============== ROUTER STATE ============== */
+let view = { screen:'home' }; // home | world | block(implicit) | flash | match | quiz
+
+function go(v){ view = v; render(); window.scrollTo({top:0, behavior:'instant'}); }
+
+function findWorld(id){ return WORLDS.find(w=>w.id===id); }
+function findBlock(w,id){ return w.blocks.find(b=>b.id===id); }
+
+/* ============== RENDER ============== */
+function el(html){ const d=document.createElement('div'); d.innerHTML=html; return d.firstElementChild; }
+
+function topbarHtml(showBack, backFn, title){
+  return `
+  <div class="topbar">
+    ${showBack ? `<button class="backbtn" onclick="${backFn}">← Volver</button>` : `<div class="brand">
+        <div class="stamp">🐻</div>
+        <div><h1>Viruez Trading Academy</h1><p>Un legado de papá para Doris, Valery y Sarai 💛</p></div>
+      </div>`}
+    <div class="starchip">⭐ ${totalStars()}</div>
+  </div>`;
+}
+
+function render(){
+  const app = document.getElementById('app');
+  if(view.screen === 'home') return renderHome(app);
+  if(view.screen === 'world') return renderWorld(app);
+  if(view.screen === 'flash') return renderFlash(app);
+  if(view.screen === 'match') return renderMatch(app);
+  if(view.screen === 'quiz') return renderQuiz(app);
+  if(view.screen === 'review') return renderReview(app);
+  if(view.screen === 'pomodoro') return renderPomodoro(app);
+  if(view.screen === 'break') return renderBreak(app);
+  if(view.screen === 'teach') return renderTeach(app);
+  if(view.screen === 'write') return renderWrite(app);
+  if(view.screen === 'charts') return renderCharts(app);
+  if(view.screen === 'chartpractice') return renderChartPractice(app);
+  if(view.screen === 'journal') return renderJournal(app);
+  if(view.screen === 'riskcalc') return renderRiskCalc(app);
+  if(view.screen === 'glossary') return renderGlossary(app);
+}
+
+/* ---- HOME ---- */
+function renderHome(app){
+  const stars = totalStars();
+  let nodes = '';
+  WORLDS.forEach((w, idx)=>{
+    const unlocked = stars >= w.need;
+    const ws = worldStars(w);
+    const maxStars = w.blocks.length * 3;
+    nodes += `
+    <div class="worldnode">
+      <button class="nodebtn ${unlocked?'unlocked':'locked'}" style="--world-color:${w.color}"
+        onclick="${unlocked ? `go({screen:'world', worldId:'${w.id}'})` : ''}" ${unlocked?'':'disabled'}>
+        ${unlocked ? w.icon : '🔒'}
+      </button>
+      <div class="nodecard">
+        <h3>${w.name}</h3>
+        <div class="progress">${w.subtitle} · ${ws}/${maxStars} ⭐</div>
+        ${unlocked ? '' : `<div class="lockmsg">Consigue ${w.need} ⭐ para desbloquear</div>`}
+      </div>
+    </div>`;
+  });
+  const due = dueWords().length;
+  app.innerHTML = `
+    ${topbarHtml(false)}
+    <div class="hero">
+      <h2>Elige tu módulo 📈</h2>
+      <p>Recorre el mapa, junta estrellas y desbloquea cada nivel del trading.</p>
+    </div>
+    <div class="reviewcard">
+      <div class="reviewleft">
+        <div class="reviewicon">📅</div>
+        <div>
+          <h3>Repaso Inteligente</h3>
+          <p>${due>0 ? due+' palabra(s) lista(s) para repasar hoy' : 'Ya repasaste todo por hoy 🎉'}</p>
+        </div>
+      </div>
+      <div class="reviewright">
+        <div class="streak">🔥 ${meta.streak||0}</div>
+        <button class="reviewbtn" ${due>0?'':'disabled'} onclick="startReview()">Repasar</button>
+      </div>
+    </div>
+    <button class="infobtn" onclick="showInfo()">ℹ️ ¿Cómo funciona este método de estudio?</button>
+    <button class="infobtn" style="border-color:var(--coral); color:var(--coral);" onclick="showLetter()">💛 Carta para Doris, Valery y Sarai</button>
+    <div class="pomocard">
+      <div>
+        <h3>🍅 Sesión Pomodoro</h3>
+        <p>Estudia enfocado, sin distracciones, con un tiempo y un descanso.</p>
+      </div>
+      <button class="pomobtn" onclick="showDurationPicker()">Empezar</button>
+    </div>
+    <div class="pomocard" style="background:var(--teal);">
+      <div>
+        <h3>🐻 Explícaselo al Oso</h3>
+        <p>Explica un concepto con tus palabras y recibe feedback al toque.</p>
+      </div>
+      <button class="pomobtn" onclick="startTeach()">Jugar</button>
+    </div>
+    <div class="toolsgrid">
+      <button class="toolcard" onclick="go({screen:'charts'})">
+        <span class="ic">📊</span><span>Gráficos en Vivo</span><span class="toolsub">TradingView real</span>
+      </button>
+      <button class="toolcard" onclick="go({screen:'chartpractice'})">
+        <span class="ic">🐻🔍</span><span>Practica con el Oso</span><span class="toolsub">Sube un gráfico, recibe feedback</span>
+      </button>
+      <button class="toolcard" onclick="go({screen:'journal'})">
+        <span class="ic">📓</span><span>Diario de Trading</span><span class="toolsub">Registra y reflexiona</span>
+      </button>
+      <button class="toolcard" onclick="go({screen:'riskcalc'})">
+        <span class="ic">🧮</span><span>Calculadora de Riesgo</span><span class="toolsub">Tamaño de posición</span>
+      </button>
+      <button class="toolcard" onclick="go({screen:'glossary'})">
+        <span class="ic">📖</span><span>Glosario Completo</span><span class="toolsub">Busca cualquier término</span>
+      </button>
+    </div>
+    <div class="map"><div class="pathline"></div>${nodes}</div>
+    <div class="footnote">Viruez Trading Academy · Grupo Viruez 🐻 Envíos · Casa de Cambios · Sabores de mi Tierra<br>Contenido educativo, no es asesoría financiera. El trading conlleva riesgo real.</div>
+  `;
+}
+
+function showDurationPicker(){
+  const overlay = el(`
+    <div class="overlay">
+      <div class="resultcard" style="max-width:320px;">
+        <div style="font-size:36px;">🍅</div>
+        <h2>¿Cuánto vas a estudiar?</h2>
+        <p>Elige tu sesión enfocada</p>
+        <div class="durationrow">
+          <button class="durbtn" onclick="this.closest('.overlay').remove(); startPomodoro(15)">15 min</button>
+          <button class="durbtn" onclick="this.closest('.overlay').remove(); startPomodoro(20)">20 min</button>
+          <button class="durbtn" onclick="this.closest('.overlay').remove(); startPomodoro(25)">25 min</button>
+        </div>
+        <button class="resultbtn" style="width:100%;" onclick="this.closest('.overlay').remove()">Cancelar</button>
+      </div>
+    </div>`);
+  document.body.appendChild(overlay);
+}
+
+function showLetter(){
+  const overlay = el(`
+    <div class="overlay">
+      <div class="resultcard" style="max-width:380px; text-align:left;">
+        <h2 style="text-align:center;">💛 Para mi madre Doris, mi hija Valery y mi ahijada Sarai</h2>
+        <p style="margin-top:10px;">Mamá, Valery, Sarai: esto que están viendo no es solo una app. Son cientos de horas de clases donde le enseñé a mucha gente todo lo que sé de trading, y quise que ese conocimiento no se quedara solo en videos guardados que nadie vuelve a ver.</p>
+        <p>Mamá, gracias por ser la base de todo lo que soy. Valery, hija, esto es para que tengas las herramientas el día que las quieras o las necesites. Sarai, ahijada, eres parte de esta familia y de este legado también.</p>
+        <p>Lo convertí en algo que puedan usar para aprender, a su ritmo, jugando, las veces que quieran. No para que se conviertan en traders si no quieren — sino para que el conocimiento esté ahí, disponible, para siempre.</p>
+        <p>Este es mi legado para ustedes tres: no dinero que se gasta, sino conocimiento que se queda.</p>
+        <p style="text-align:right; font-weight:800;">Con amor, papá 🐻</p>
+        <button class="resultbtn" style="width:100%;" onclick="this.closest('.overlay').remove()">Cerrar</button>
+      </div>
+    </div>`);
+  document.body.appendChild(overlay);
+}
+function showInfo(){
+  const overlay = el(`
+    <div class="overlay">
+      <div class="resultcard" style="max-width:380px; text-align:left;">
+        <h2 style="text-align:center;">🧠 El método</h2>
+        <p style="margin-top:10px;"><b>Recuperación activa:</b> en vez de solo leer, intentas recordar el concepto antes de ver la respuesta. Esto fija el aprendizaje mucho mejor que releer.</p>
+        <p><b>Repetición espaciada:</b> el Repaso Inteligente te muestra cada concepto justo antes de que lo olvides, con intervalos que crecen (1, 2, 4, 7, 14... días).</p>
+        <p><b>Mezcla de temas (interleaving):</b> el Repaso Mezclado combina conceptos de varios módulos, en vez de practicar siempre lo mismo seguido.</p>
+        <p style="font-size:12px; color:#8a93ab;">Estas son las técnicas de estudio respaldadas por la ciencia cognitiva y que enseñan los centros de aprendizaje de universidades como Harvard y Yale.</p>
+        <button class="resultbtn" style="width:100%;" onclick="this.closest('.overlay').remove()">Entendido</button>
+      </div>
+    </div>`);
+  document.body.appendChild(overlay);
+}
+
+/* ---- WORLD ---- */
+function renderWorld(app){
+  const w = findWorld(view.worldId);
+  let cards = '';
+  w.blocks.forEach((b, i)=>{
+    const prevDone = i===0 || blockStars(w.blocks[i-1].id) >= 1;
+    const p = blockProg(b.id);
+    cards += `
+    <div class="blockcard ${prevDone?'':'locked'}">
+      ${prevDone?'':'<div class="locklabel">🔒</div>'}
+      <div class="blockhead">
+        <div><h3>${b.title}</h3><div class="weeks">${b.weeks} · ${b.words.length} palabras</div></div>
+        <div class="blockstars">⭐ ${blockStars(b.id)}/3</div>
+      </div>
+      <div class="gamerow">
+        <button class="gamebtn" ${prevDone?'':'disabled'} onclick="startFlash('${w.id}','${b.id}')"><span class="ic">🗂️</span>Tarjetas</button>
+        <button class="gamebtn" ${prevDone?'':'disabled'} onclick="startMatch('${w.id}','${b.id}')"><span class="ic">🧩</span>Memoria ${p.match?('· ⭐'+p.match):''}</button>
+        <button class="gamebtn" ${prevDone?'':'disabled'} onclick="startQuiz('${w.id}','${b.id}')"><span class="ic">❓</span>Quiz ${p.quiz?('· ⭐'+p.quiz):''}</button>
+        <button class="gamebtn" ${prevDone?'':'disabled'} onclick="startWrite('${w.id}','${b.id}')"><span class="ic">✍️</span>Escribir ${p.write?('· ⭐'+p.write):''}</button>
+      </div>
+    </div>`;
+  });
+  app.innerHTML = `
+    ${topbarHtml(true, "go({screen:'home'})")}
+    <div class="worldbanner" style="--world-color:${w.color}; background:${w.color}">
+      <h2>${w.icon} ${w.name}</h2>
+      <p>${w.subtitle} · ${w.blocks.length} islas de vocabulario</p>
+      <button class="mixedbtn" onclick="startMixedQuiz('${w.id}')">🔀 Repaso Mezclado ${blockStars('__mixed__'+w.id)?('· ⭐'+blockStars('__mixed__'+w.id)):''}</button>
+    </div>
+    ${cards}
+  `;
+}
+
+/* ============== FLASHCARDS ============== */
+let flashState = null;
+function startFlash(worldId, blockId){
+  const w = findWorld(worldId), b = findBlock(w, blockId);
+  flashState = { worldId, blockId, words: b.words.slice(), i:0, flipped:false };
+  go({screen:'flash'});
+}
+function renderFlash(app){
+  const w = findWorld(flashState.worldId), b = findBlock(w, flashState.blockId);
+  const word = flashState.words[flashState.i];
+  const pct = Math.round((flashState.i)/flashState.words.length*100);
+  app.innerHTML = `
+    ${topbarHtml(true, `go({screen:'world', worldId:'${w.id}'})`)}
+    <div class="gameheader">
+      <h2>🗂️ Tarjetas · ${b.title}</h2>
+      <div class="bar"><div style="width:${pct}%"></div></div>
+    </div>
+    <div class="flashwrap">
+      <div class="flashcounter">Tarjeta ${flashState.i+1} de ${flashState.words.length}</div>
+      <div class="flashcard ${flashState.flipped?'flipped':''}" id="fc" onclick="flipFlash()">
+        <div class="flashinner">
+          <div class="flashface flashfront"><div class="en">${word[0]}</div>${speakBtn(word[0])}<div class="hint">Toca para ver la definición 👆</div></div>
+          <div class="flashface flashback"><div class="es">${word[1]}</div><div class="ex">“${word[2]}”</div>${diagramHtml(word[0])}</div>
+        </div>
+      </div>
+      <div class="flashbtns">
+        <button class="btn-learn" onclick="event.stopPropagation(); nextFlash('again')">🔁 Repasar más</button>
+        <button class="btn-know" onclick="event.stopPropagation(); nextFlash('good')">✅ ¡Ya lo sé!</button>
+      </div>
+    </div>
+  `;
+}
+function flipFlash(){ flashState.flipped = !flashState.flipped; render(); }
+function nextFlash(rating){
+  const w = findWorld(flashState.worldId), b = findBlock(w, flashState.blockId);
+  const word = flashState.words[flashState.i];
+  rateWord(wordKey(b.id, word), rating);
+  if(flashState.i < flashState.words.length-1){
+    flashState.i++; flashState.flipped=false; render();
+  } else {
+    showResult('¡Tarjetas completas!', '🗂️✅', 'Repasaste todo el vocabulario de este bloque. Estas palabras ya entraron a tu Repaso Inteligente.', `go({screen:'world', worldId:'${flashState.worldId}'})`);
+  }
+}
+
+/* ============== MEMORY MATCH ============== */
+let matchState = null;
+/* ============== DIAGRAMAS ILUSTRATIVOS (estilo libro de texto) ============== */
+function candle(x,hY,lY,oY,cY){
+  const up = cY < oY;
+  const color = up ? 'var(--grass)' : 'var(--coral)';
+  const bodyTop = Math.min(oY,cY), bodyBot = Math.max(oY,cY);
+  return `<line x1="${x}" y1="${hY}" x2="${x}" y2="${lY}" stroke="${color}" stroke-width="2"/><rect x="${x-6}" y="${bodyTop}" width="12" height="${Math.max(3,bodyBot-bodyTop)}" fill="${color}" rx="1.5"/>`;
+}
+function hline(y,label,dash){ return `<line x1="10" y1="${y}" x2="250" y2="${y}" stroke="var(--ink)" stroke-width="1.5" stroke-dasharray="${dash?'4,4':'0'}" opacity="0.55"/>${label?`<text x="252" y="${y+3}" font-size="9" fill="var(--ink)" opacity="0.7" text-anchor="start">${label}</text>`:''}`; }
+function zone(x1,y1,x2,y2,color,label){ return `<rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="${color}" opacity="0.18"/><rect x="${x1}" y="${y1}" width="${x2-x1}" height="${y2-y1}" fill="none" stroke="${color}" stroke-width="1.5" stroke-dasharray="3,3"/>${label?`<text x="${(x1+x2)/2}" y="${y1-4}" font-size="9" fill="${color}" text-anchor="middle" font-weight="700">${label}</text>`:''}`; }
+function arrow(x1,y1,x2,y2,color){ return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="2" marker-end="url(#arrowhead)"/>`; }
+function wrap(inner){ return `<svg viewBox="0 0 260 130" class="diagram-svg" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="var(--ink)"/></marker></defs>${inner}</svg>`; }
+
+const CONCEPT_DIAGRAMS = {
+  'Vela japonesa': wrap(
+    `<line x1="130" y1="15" x2="130" y2="115" stroke="var(--grass)" stroke-width="2"/>
+     <rect x="115" y="45" width="30" height="40" fill="var(--grass)" rx="2"/>
+     <text x="170" y="20" font-size="9" fill="var(--ink)">Máximo</text>
+     <line x1="148" y1="22" x2="135" y2="17" stroke="var(--ink)" stroke-width="1"/>
+     <text x="170" y="65" font-size="9" fill="var(--ink)">Cuerpo (apertura-cierre)</text>
+     <line x1="168" y1="62" x2="145" y2="62" stroke="var(--ink)" stroke-width="1"/>
+     <text x="170" y="112" font-size="9" fill="var(--ink)">Mínimo</text>
+     <line x1="148" y1="108" x2="135" y2="113" stroke="var(--ink)" stroke-width="1"/>`),
+
+  'Tendencia alcista': wrap([
+    candle(20,90,105,100,92),candle(45,80,95,90,82),candle(70,85,98,92,86),
+    candle(95,65,80,80,68),candle(120,70,84,76,72),candle(145,48,64,64,50),
+    candle(170,52,66,60,54),candle(195,30,46,46,32),candle(220,34,48,42,36)
+  ].join('') + arrow(15,108,225,28,'var(--grass)')),
+
+  'Tendencia bajista': wrap([
+    candle(20,25,40,30,27),candle(45,30,45,35,32),candle(70,28,42,32,40),
+    candle(95,48,64,52,62),candle(120,46,60,58,48),candle(145,68,84,72,82),
+    candle(170,66,80,76,68),candle(195,88,104,92,102),candle(220,86,100,96,88)
+  ].join('') + arrow(15,22,225,102,'var(--coral)')),
+
+  'Mercado lateral': wrap(
+    hline(35,'Resistencia',true) + hline(95,'Soporte',true) + [
+    candle(20,40,90,80,45),candle(45,42,92,48,86),candle(70,38,88,82,40),
+    candle(95,44,94,50,90),candle(120,36,86,80,38),candle(145,40,90,46,84),
+    candle(170,38,88,82,40),candle(195,42,92,48,86),candle(220,40,90,84,42)
+  ].join('')),
+
+  'Soporte': wrap(
+    [candle(20,30,55,45,33),candle(45,40,65,55,42),candle(70,55,80,65,57),
+     candle(95,68,92,78,70),candle(120,80,100,88,90),candle(145,82,100,92,84),
+     candle(170,78,100,90,80),candle(195,55,82,90,58),candle(220,35,60,60,38)
+    ].join('') + hline(99,'Soporte',true)),
+
+  'Resistencia': wrap(
+    [candle(20,80,105,95,82),candle(45,68,92,82,70),candle(70,52,76,68,54),
+     candle(95,38,60,50,40),candle(120,25,45,38,28),candle(145,22,42,30,24),
+     candle(170,24,46,28,42),candle(195,48,72,40,70),candle(220,68,92,70,90)
+    ].join('') + hline(22,'Resistencia',true)),
+
+  'Retroceso de Fibonacci': wrap(
+    hline(30,'0% (máximo)',true) + hline(58,'61.8%',true) + hline(95,'0% inicio',true) + [
+    candle(20,80,100,92,82),candle(45,60,84,80,62),candle(70,40,64,60,42),
+    candle(95,28,50,40,30),candle(120,45,62,32,58),candle(145,52,70,56,68),
+    candle(170,30,52,65,32),candle(195,18,38,30,20),candle(220,10,28,20,12)
+  ].join('')),
+
+  'Ruptura (breakout)': wrap(
+    hline(55,'Resistencia',true) + [
+    candle(20,58,78,68,60),candle(45,56,76,66,58),candle(70,58,78,68,60),
+    candle(95,56,76,62,58),candle(120,54,76,66,56),candle(145,30,58,55,32),
+    candle(170,16,32,28,18),candle(195,10,26,22,12)
+  ].join('')),
+
+  'Pullback': wrap(
+    hline(55,'Nivel roto',true) + [
+    candle(20,60,80,70,62),candle(45,58,78,68,60),candle(70,30,58,55,32),
+    candle(95,16,32,28,18),candle(120,40,58,30,54),candle(145,18,36,42,20),
+    candle(170,8,24,20,10),candle(195,4,20,16,6)
+  ].join('')),
+
+  'Patrón de precio': wrap(
+    [candle(20,70,95,85,72),candle(45,45,68,72,48),candle(70,55,75,50,70),
+     candle(95,20,45,68,22),candle(120,50,70,24,65),candle(145,45,68,70,48),
+     candle(170,55,75,50,70),candle(195,68,92,72,90)
+    ].join('') + `<text x="130" y="14" font-size="9" font-weight="700" fill="var(--ink)" text-anchor="middle">Hombro-Cabeza-Hombro</text>`),
+
+  'RSI': wrap(
+    hline(20,'70 sobrecompra',true) + hline(105,'30 sobreventa',true) +
+    `<path d="M10,90 Q40,40 70,25 T130,55 T190,95 T250,30" fill="none" stroke="var(--teal)" stroke-width="2.5"/>`),
+
+  'Estocástico': wrap(
+    hline(20,'80',true) + hline(105,'20',true) +
+    `<path d="M10,80 Q50,20 90,60 T170,30 T250,90" fill="none" stroke="var(--coral)" stroke-width="2"/>
+     <path d="M10,90 Q50,40 90,75 T170,50 T250,100" fill="none" stroke="var(--teal)" stroke-width="2"/>`),
+
+  'Bandas de Bollinger': wrap(
+    `<path d="M10,20 Q70,10 130,35 T250,15" fill="none" stroke="var(--ink)" stroke-width="1.2" opacity="0.5"/>
+     <path d="M10,65 Q70,55 130,65 T250,60" fill="none" stroke="var(--ink)" stroke-width="1.2" stroke-dasharray="3,3"/>
+     <path d="M10,110 Q70,100 130,95 T250,105" fill="none" stroke="var(--ink)" stroke-width="1.2" opacity="0.5"/>` + [
+     candle(30,40,70,60,42),candle(60,45,75,65,48),candle(90,50,78,55,75),
+     candle(120,40,68,60,42),candle(150,30,58,45,32),candle(180,20,45,40,22),
+     candle(210,15,38,30,18)
+    ].join('')),
+
+  'Order block': wrap(
+    [candle(20,55,75,68,57),candle(45,58,78,70,60),candle(70,40,65,60,42)
+    ].join('') + zone(60,40,82,65,'var(--sun)','OB') + [
+     candle(95,15,40,38,17),candle(120,10,30,25,12),candle(145,35,58,18,55),
+     candle(170,40,63,38,60),candle(195,12,38,55,15)
+    ].join('') + arrow(75,38,75,18,'var(--ink)')),
+
+  'Zona de oferta': wrap(
+    [candle(20,70,90,80,72),candle(45,55,78,72,57),candle(70,40,62,57,42)
+    ].join('') + zone(60,30,140,55,'var(--coral)','Oferta') +
+    [candle(95,32,55,45,50),candle(120,35,55,38,52),
+     candle(145,55,80,40,78),candle(170,75,100,78,98),candle(195,90,112,98,110)
+    ].join('')),
+
+  'Zona de demanda': wrap(
+    [candle(20,20,40,28,22),candle(45,35,58,22,55),candle(70,55,80,53,78)
+    ].join('') + zone(60,78,140,100,'var(--grass)','Demanda') +
+    [candle(95,80,100,88,82),candle(120,78,98,95,80),
+     candle(145,55,80,95,57),candle(170,32,58,55,34),candle(195,15,35,32,17)
+    ].join('')),
+
+  'Imbalance (FVG)': wrap(
+    [candle(40,30,50,45,32)].join('') +
+    zone(55,35,95,75,'var(--sun)','Imbalance') +
+    [candle(70,15,38,35,17),candle(100,60,82,65,78)
+    ].join('') +
+    [candle(130,55,78,62,57),candle(160,40,62,58,42),candle(190,20,42,38,22),
+     candle(220,15,35,32,17)
+    ].join('')),
+
+  'Liquidez': wrap(
+    hline(85,'Mínimo previo',true) +
+    [candle(20,40,65,55,42),candle(45,45,70,58,47),candle(70,55,82,62,80),
+     candle(95,60,95,65,72)
+    ].join('') +
+    `<line x1="120" y1="72" x2="120" y2="100" stroke="var(--coral)" stroke-width="2"/>
+     <rect x="114" y="86" width="12" height="14" fill="var(--coral)" rx="1.5"/>` +
+    [candle(145,40,68,62,42),candle(170,20,45,40,22),candle(195,8,28,25,10)
+    ].join('')),
+
+  'Estructura de mercado': wrap(
+    [candle(20,80,100,92,82),candle(45,60,85,80,62)
+    ].join('') + `<text x="32" y="55" font-size="8" fill="var(--grass)">HH</text>` +
+    [candle(70,68,88,62,86)].join('') + `<text x="82" y="100" font-size="8" fill="var(--grass)">HL</text>` +
+    [candle(95,38,62,58,40)].join('') + `<text x="107" y="33" font-size="8" fill="var(--grass)">HH</text>` +
+    [candle(120,48,68,44,66)].join('') +
+    [candle(145,55,90,50,88)].join('') + `<text x="150" y="105" font-size="8" fill="var(--coral)" font-weight="700">LL (cambio)</text>` +
+    hline(62,'',true)),
+
+  'Acumulación': wrap(
+    zone(20,55,170,85,'var(--sun)','Acumulación') + [
+    candle(35,60,80,70,62),candle(60,58,80,65,75),candle(85,62,82,72,64),
+    candle(110,58,80,68,76),candle(135,60,82,70,62),candle(160,55,78,65,72)
+    ].join('') + [candle(190,30,58,55,32),candle(215,10,35,28,12)].join('') + arrow(175,80,210,20,'var(--grass)')),
+
+  'Distribución': wrap(
+    zone(20,30,170,55,'var(--sun)','Distribución') + [
+    candle(35,35,55,45,37),candle(60,33,55,40,50),candle(85,38,58,48,40),
+    candle(110,35,58,45,52),candle(135,33,55,42,36),candle(160,38,58,48,55)
+    ].join('') + [candle(190,60,85,55,82),candle(215,85,110,80,108)].join('') + arrow(175,30,210,100,'var(--coral)')),
+
+  'Manipulación': wrap(
+    hline(85,'Soporte aparente',true) + [
+    candle(20,50,75,65,52),candle(45,55,80,62,78),candle(70,60,84,65,82)
+    ].join('') +
+    `<line x1="95" y1="78" x2="95" y2="118" stroke="var(--coral)" stroke-width="2"/>
+     <rect x="89" y="100" width="12" height="14" fill="var(--coral)" rx="1.5"/>` +
+    [candle(120,40,80,75,42),candle(145,20,48,40,22),candle(170,10,30,25,12)
+    ].join('') + `<text x="160" y="8" font-size="9" font-weight="700" fill="var(--coral)" text-anchor="middle">Falsa ruptura → giro</text>`)
+};
+
+function diagramHtml(term){
+  const svg = CONCEPT_DIAGRAMS[term];
+  if(!svg) return '';
+  return `<div class="diagrambox">${svg}<div class="diagram-caption">📐 Ejemplo ilustrativo — entrena tu ojo a reconocer la forma</div></div>`;
+}
+
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; }
+function speak(text){
+  try{
+    if(!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'es-ES';
+    u.rate = 0.92;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function speakBtn(text){
+  return `<button class="speakbtn" onclick="event.stopPropagation(); speak('${text.replace(/'/g,"\\'")}')" aria-label="Escuchar pronunciación">🔊</button>`;
+}
+function startMatch(worldId, blockId){
+  const w = findWorld(worldId), b = findBlock(w, blockId);
+  const pairs = shuffle(b.words).slice(0, Math.min(8, b.words.length));
+  let cards = [];
+  pairs.forEach((pair, idx)=>{
+    cards.push({key:idx, text:pair[0], type:'en'});
+    cards.push({key:idx, text:pair[1], type:'es'});
+  });
+  cards = shuffle(cards).map((c,i)=>({...c, id:i, up:false, matched:false}));
+  matchState = { worldId, blockId, cards, openIds:[], moves:0, pairsTotal:pairs.length, matchedCount:0, busy:false };
+  go({screen:'match'});
+}
+function renderMatch(app){
+  const w = findWorld(matchState.worldId), b = findBlock(w, matchState.blockId);
+  const cardsHtml = matchState.cards.map(c=>`
+    <button class="memcard ${c.up||c.matched?'faceup':''} ${c.matched?'matched':''}" onclick="flipMatch(${c.id})" ${c.matched?'disabled':''}>
+      ${c.up||c.matched ? c.text : '?'}
+    </button>`).join('');
+  app.innerHTML = `
+    ${topbarHtml(true, `go({screen:'world', worldId:'${w.id}'})`)}
+    <div class="gameheader">
+      <h2>🧩 Memoria · ${b.title}</h2>
+      <div class="memstats"><span>🔁 ${matchState.moves} movimientos</span><span>✅ ${matchState.matchedCount}/${matchState.pairsTotal} pares</span></div>
+    </div>
+    <div class="memgrid">${cardsHtml}</div>
+  `;
+}
+function flipMatch(id){
+  if(matchState.busy) return;
+  const c = matchState.cards.find(c=>c.id===id);
+  if(c.up || c.matched) return;
+  c.up = true;
+  matchState.openIds.push(id);
+  render();
+  if(matchState.openIds.length===2){
+    matchState.busy = true;
+    matchState.moves++;
+    const [id1,id2] = matchState.openIds;
+    const c1 = matchState.cards.find(c=>c.id===id1), c2 = matchState.cards.find(c=>c.id===id2);
+    setTimeout(()=>{
+      if(c1.key===c2.key && c1.type!==c2.type){
+        c1.matched=true; c2.matched=true; matchState.matchedCount++;
+      } else {
+        c1.up=false; c2.up=false;
+      }
+      matchState.openIds = [];
+      matchState.busy = false;
+      render();
+      if(matchState.matchedCount === matchState.pairsTotal){
+        const ideal = matchState.pairsTotal*2;
+        let stars = matchState.moves<=ideal+2 ? 3 : matchState.moves<=ideal+6 ? 2 : 1;
+        setBlockResult(matchState.blockId, 'match', stars);
+        setTimeout(()=>showResult('¡Pares completados!', '🧩✅', `Lo lograste en ${matchState.moves} movimientos.`, `go({screen:'world', worldId:'${matchState.worldId}'})`, stars), 300);
+      }
+    }, 700);
+  }
+}
+
+/* ============== QUIZ ============== */
+let quizState = null;
+function startQuiz(worldId, blockId){
+  const w = findWorld(worldId), b = findBlock(w, blockId);
+  const pool = shuffle(b.words);
+  const qCount = Math.min(8, pool.length);
+  const questions = pool.slice(0, qCount).map(word=>{
+    let distractors = shuffle(b.words.filter(x=>x[0]!==word[0])).slice(0,3).map(x=>x[1]);
+    const options = shuffle([word[1], ...distractors]);
+    return { word, options, answered:false, picked:null };
+  });
+  quizState = { worldId, blockId, questions, i:0, correct:0, title:b.title, mixed:false };
+  go({screen:'quiz'});
+}
+function startMixedQuiz(worldId){
+  const w = findWorld(worldId);
+  const blocksUnlocked = w.blocks.filter((b,i)=> i===0 || blockStars(w.blocks[i-1].id)>=1);
+  let pool = [];
+  blocksUnlocked.forEach(b=> b.words.forEach(word=> pool.push(word)));
+  pool = shuffle(pool);
+  const qCount = Math.min(12, pool.length);
+  const questions = pool.slice(0, qCount).map(word=>{
+    let candidates = pool.filter(x=>x[0]!==word[0] && x[1]!==word[1]);
+    let distractors = shuffle(candidates).slice(0,3).map(x=>x[1]);
+    const options = shuffle([word[1], ...distractors]);
+    return { word, options, answered:false, picked:null };
+  });
+  quizState = { worldId, blockId:'__mixed__'+worldId, questions, i:0, correct:0, title:'Repaso Mezclado', mixed:true };
+  go({screen:'quiz'});
+}
+function renderQuiz(app){
+  const w = findWorld(quizState.worldId);
+  const q = quizState.questions[quizState.i];
+  const pct = Math.round(quizState.i/quizState.questions.length*100);
+  const opts = q.options.map(o=>{
+    let cls='';
+    if(q.answered){
+      if(o===q.word[1]) cls='correct';
+      else if(o===q.picked) cls='wrong';
+    }
+    return `<button class="optbtn ${cls}" ${q.answered?'disabled':''} onclick="answerQuiz('${o.replace(/'/g,"\\'")}')">${o}</button>`;
+  }).join('');
+  app.innerHTML = `
+    ${topbarHtml(true, `go({screen:'world', worldId:'${w.id}'})`)}
+    <div class="gameheader">
+      <h2>❓ ${quizState.mixed?'🔀 ':''}Quiz · ${quizState.title}</h2>
+      <div class="bar"><div style="width:${pct}%"></div></div>
+    </div>
+    <div class="quizcard">
+      <div class="q-sub">Pregunta ${quizState.i+1} de ${quizState.questions.length} · ¿Qué significa...?</div>
+      <div class="q-en">${q.word[0]}</div>${speakBtn(q.word[0])}
+      <div class="options">${opts}</div>
+    </div>
+  `;
+}
+function answerQuiz(opt){
+  const q = quizState.questions[quizState.i];
+  if(q.answered) return;
+  q.answered = true; q.picked = opt;
+  if(opt === q.word[1]) quizState.correct++;
+  render();
+  setTimeout(()=>{
+    if(quizState.i < quizState.questions.length-1){
+      quizState.i++; render();
+    } else {
+      const pct = quizState.correct/quizState.questions.length*100;
+      const stars = pct>=90?3:pct>=70?2:pct>=50?1:0;
+      setBlockResult(quizState.blockId, 'quiz', stars);
+      showResult('¡Quiz terminado!', stars>=2?'🏆':'📚', `Respondiste bien ${quizState.correct} de ${quizState.questions.length}.`, `go({screen:'world', worldId:'${quizState.worldId}'})`, stars);
+    }
+  }, 900);
+}
+
+/* ============== REPASO INTELIGENTE (Repetición Espaciada) ============== */
+let reviewState = null;
+function startReview(){
+  const session = dueWords().slice(0, 15);
+  if(session.length === 0) return;
+  reviewState = { session, i:0, flipped:false };
+  go({screen:'review'});
+}
+function renderReview(app){
+  const item = reviewState.session[reviewState.i];
+  const pct = Math.round(reviewState.i/reviewState.session.length*100);
+  app.innerHTML = `
+    ${topbarHtml(true, "go({screen:'home'})")}
+    <div class="gameheader">
+      <h2>📅 Repaso Inteligente</h2>
+      <div class="bar"><div style="width:${pct}%"></div></div>
+    </div>
+    <div class="flashwrap">
+      <div class="flashcounter">Palabra ${reviewState.i+1} de ${reviewState.session.length} · ${item.block.title}</div>
+      <div class="flashcard ${reviewState.flipped?'flipped':''}" onclick="flipReview()">
+        <div class="flashinner">
+          <div class="flashface flashfront"><div class="en">${item.word[0]}</div>${speakBtn(item.word[0])}<div class="hint">¿Te acuerdas? Toca para revisar 👆</div></div>
+          <div class="flashface flashback"><div class="es">${item.word[1]}</div><div class="ex">“${item.word[2]}”</div>${diagramHtml(item.word[0])}</div>
+        </div>
+      </div>
+      ${reviewState.flipped ? `
+      <div class="ratebtns">
+        <button class="ratebtn rate-again" onclick="event.stopPropagation(); rateReview('again')">😵 Otra vez</button>
+        <button class="ratebtn rate-hard" onclick="event.stopPropagation(); rateReview('hard')">😬 Difícil</button>
+        <button class="ratebtn rate-good" onclick="event.stopPropagation(); rateReview('good')">🙂 Bien</button>
+        <button class="ratebtn rate-easy" onclick="event.stopPropagation(); rateReview('easy')">😄 Fácil</button>
+      </div>` : `<p class="hint" style="font-weight:700; color:#8a93ab; font-size:12px;">Piensa la definición antes de voltear la tarjeta</p>`}
+    </div>
+  `;
+}
+function flipReview(){ reviewState.flipped = !reviewState.flipped; render(); }
+function rateReview(rating){
+  const item = reviewState.session[reviewState.i];
+  rateWord(item.key, rating);
+  if(reviewState.i < reviewState.session.length-1){
+    reviewState.i++; reviewState.flipped = false; render();
+  } else {
+    touchStreak();
+    showResult('¡Repaso del día completo!', '🔥', `Racha actual: ${meta.streak} día(s) seguidos estudiando.`, "go({screen:'home'})");
+  }
+}
+
+/* ============== POMODORO ============== */
+let pomoState = null;
+let pomoTimerId = null;
+function formatTime(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+function allWordsPool(){
+  let pool = [];
+  unlockedBlocks().forEach(({world,block})=>{
+    block.words.forEach(word=> pool.push({world, block, word}));
+  });
+  return pool.length ? pool : (WORLDS[0].blocks[0].words.map(word=>({world:WORLDS[0], block:WORLDS[0].blocks[0], word})));
+}
+function startPomodoro(minutes){
+  const due = dueWords();
+  const pool = due.length ? due : shuffle(allWordsPool());
+  pomoState = { totalSeconds: minutes*60, remaining: minutes*60, pool: shuffle(pool), i:0, flipped:false, reviewedCount:0 };
+  go({screen:'pomodoro'});
+  clearInterval(pomoTimerId);
+  pomoTimerId = setInterval(tickPomodoro, 1000);
+}
+function tickPomodoro(){
+  if(!pomoState) { clearInterval(pomoTimerId); return; }
+  pomoState.remaining--;
+  const t = document.getElementById('pomotimer');
+  if(t) t.textContent = formatTime(Math.max(0,pomoState.remaining));
+  if(pomoState.remaining <= 0){
+    clearInterval(pomoTimerId);
+    finishPomodoro();
+  }
+}
+function stopPomodoroAndGoHome(){
+  clearInterval(pomoTimerId);
+  pomoState = null;
+  go({screen:'home'});
+}
+function renderPomodoro(app){
+  const item = pomoState.pool[pomoState.i % pomoState.pool.length];
+  const word = item.word;
+  app.innerHTML = `
+    ${topbarHtml(true, "stopPomodoroAndGoHome()")}
+    <div class="gameheader">
+      <div class="pomotimerwrap">
+        <div id="pomotimer">${formatTime(pomoState.remaining)}</div>
+        <div class="pomolabel">🍅 Sesión enfocada · ${pomoState.reviewedCount} palabra(s) repasadas</div>
+      </div>
+    </div>
+    <div class="flashwrap">
+      <div class="flashcounter">${item.block.title}</div>
+      <div class="flashcard ${pomoState.flipped?'flipped':''}" onclick="flipPomo()">
+        <div class="flashinner">
+          <div class="flashface flashfront"><div class="en">${word[0]}</div>${speakBtn(word[0])}<div class="hint">Toca para ver la definición 👆</div></div>
+          <div class="flashface flashback"><div class="es">${word[1]}</div><div class="ex">“${word[2]}”</div>${diagramHtml(word[0])}</div>
+        </div>
+      </div>
+      <div class="flashbtns">
+        <button class="btn-learn" onclick="event.stopPropagation(); nextPomo('again')">🔁 Repasar más</button>
+        <button class="btn-know" onclick="event.stopPropagation(); nextPomo('good')">✅ ¡Ya lo sé!</button>
+      </div>
+    </div>
+  `;
+}
+function flipPomo(){ pomoState.flipped = !pomoState.flipped; render(); }
+function nextPomo(rating){
+  const item = pomoState.pool[pomoState.i % pomoState.pool.length];
+  rateWord(wordKey(item.block.id, item.word), rating);
+  pomoState.reviewedCount++;
+  pomoState.i++;
+  if(pomoState.i >= pomoState.pool.length){ pomoState.pool = shuffle(pomoState.pool); pomoState.i = 0; }
+  pomoState.flipped = false;
+  render();
+}
+function finishPomodoro(){
+  const count = pomoState ? pomoState.reviewedCount : 0;
+  touchStreak();
+  pomoState = null;
+  const overlay = el(`
+    <div class="overlay">
+      <div class="resultcard">
+        <div style="font-size:40px">🍅✅</div>
+        <h2>¡Sesión completa!</h2>
+        <p>Repasaste ${count} palabra(s) sin distracciones. ¡Excelente enfoque!</p>
+        <button class="resultbtn" style="width:100%; margin-bottom:8px;" id="breakYes">☕ Tomar descanso de 5 min</button>
+        <button class="resultbtn" style="width:100%; background:#fff; color:var(--ink); border:2px solid var(--ink);" id="breakNo">🏠 Volver al inicio</button>
+      </div>
+    </div>`);
+  overlay.querySelector('#breakYes').onclick = ()=>{ overlay.remove(); startBreak(); };
+  overlay.querySelector('#breakNo').onclick = ()=>{ overlay.remove(); go({screen:'home'}); };
+  document.body.appendChild(overlay);
+}
+function startBreak(){
+  pomoState = { remaining: 5*60 };
+  go({screen:'break'});
+  clearInterval(pomoTimerId);
+  pomoTimerId = setInterval(tickBreak, 1000);
+}
+function tickBreak(){
+  if(!pomoState){ clearInterval(pomoTimerId); return; }
+  pomoState.remaining--;
+  const t = document.getElementById('breaktimer');
+  if(t) t.textContent = formatTime(Math.max(0,pomoState.remaining));
+  if(pomoState.remaining <= 0){ clearInterval(pomoTimerId); pomoState=null; go({screen:'home'}); }
+}
+function skipBreak(){ clearInterval(pomoTimerId); pomoState=null; go({screen:'home'}); }
+function renderBreak(app){
+  app.innerHTML = `
+    ${topbarHtml(true, "skipBreak()")}
+    <div class="breakwrap">
+      <div class="bigicon">☕🦁</div>
+      <h2>¡Buen trabajo! Hora de un descanso</h2>
+      <div id="breaktimer">${formatTime(pomoState.remaining)}</div>
+      <p style="font-weight:700; color:#6b7690;">Estira las piernas, toma agua o mira por la ventana un ratito.</p>
+      <button class="resultbtn" onclick="skipBreak()">Saltar descanso</button>
+    </div>
+  `;
+}
+
+/* ============== ENSÉÑALE A LEO ============== */
+let teachState = null;
+function startTeach(){
+  const pool = allWordsPool();
+  const item = pool[Math.floor(Math.random()*pool.length)];
+  teachState = { item, sentence:'', loading:false, feedback:null, error:null };
+  go({screen:'teach'});
+}
+function renderTeach(app){
+  const item = teachState.item;
+  const word = item.word;
+  app.innerHTML = `
+    ${topbarHtml(true, "go({screen:'home'})")}
+    <div class="gameheader"><h2>🐻 Explícaselo al Oso</h2></div>
+    <div class="teachcard">
+      <div class="leoicon">🐻</div>
+      <p class="teachword">Tu concepto es: <b>${word[0]}</b></p>
+      <p class="teachhint">Explica este concepto con tus propias palabras, como si se lo enseñaras a alguien que recién empieza. ¡Explícaselo al Oso!</p>
+      <textarea id="teach-input" rows="3" placeholder="Ej: ${word[0]} es cuando..." ${teachState.loading?'disabled':''}>${teachState.sentence}</textarea>
+      <button class="pomobtn" style="width:100%; margin-top:10px; background:var(--ink);" ${teachState.loading?'disabled':''} onclick="submitTeach()">${teachState.loading?'🐻 El Oso está pensando...':'Explícaselo al Oso 🐻'}</button>
+      ${teachState.feedback ? `<div class="leobubble">🐻 ${teachState.feedback}</div>` : ''}
+      ${teachState.error ? `<div class="leobubble leobubble-err">⚠️ ${teachState.error}</div>` : ''}
+      ${(teachState.feedback||teachState.error) ? `<button class="resultbtn" style="width:100%; margin-top:10px;" onclick="startTeach()">🔄 Otro concepto</button>` : ''}
+    </div>
+  `;
+}
+async function submitTeach(){
+  const input = document.getElementById('teach-input');
+  const sentence = input ? input.value.trim() : '';
+  if(!sentence) return;
+  teachState.sentence = sentence;
+  teachState.loading = true;
+  teachState.feedback = null;
+  teachState.error = null;
+  render();
+  try{
+    const word = teachState.item.word;
+    const response = await fetch("/api/leo", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ concept: word[0], definition: word[1], sentence })
+    });
+    const data = await response.json();
+    if(data.error) throw new Error(data.error);
+    teachState.feedback = data.text || '¡El Oso se quedó pensando! Intenta de nuevo.';
+  }catch(e){
+    teachState.error = 'El Oso no pudo responder ahora mismo. Revisa tu conexión e intenta de nuevo.';
+  }
+  teachState.loading = false;
+  render();
+}
+
+/* ============== MODO ESCRIBIR (recuperación libre) ============== */
+let writeState = null;
+function normalizeAnswer(s){
+  return s.toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,'');
+}
+function startWrite(worldId, blockId){
+  const w = findWorld(worldId), b = findBlock(w, blockId);
+  const words = shuffle(b.words).slice(0, Math.min(8, b.words.length));
+  writeState = { worldId, blockId, words, i:0, correctCount:0, checked:false, wasCorrect:false };
+  go({screen:'write'});
+}
+function renderWrite(app){
+  const w = findWorld(writeState.worldId), b = findBlock(w, writeState.blockId);
+  const word = writeState.words[writeState.i];
+  const pct = Math.round(writeState.i/writeState.words.length*100);
+  const inputCls = writeState.checked ? (writeState.wasCorrect ? 'correct' : 'wrong') : '';
+  app.innerHTML = `
+    ${topbarHtml(true, `go({screen:'world', worldId:'${w.id}'})`)}
+    <div class="gameheader">
+      <h2>✍️ Escribir · ${b.title}</h2>
+      <div class="bar"><div style="width:${pct}%"></div></div>
+    </div>
+    <div class="writecard">
+      <div class="w-sub" style="font-size:12px; color:#8a93ab; font-weight:700;">Concepto ${writeState.i+1} de ${writeState.words.length} · ¿Cómo se llama este concepto?</div>
+      <div class="w-es">${word[1]}</div>
+      <div class="w-ex">“${word[2].replace(new RegExp(word[0],'i'), '_____')}”</div>
+      <input type="text" id="write-input" class="${inputCls}" autocomplete="off" autocapitalize="off"
+        placeholder="Escribe el término..." ${writeState.checked?'disabled':''}
+        onkeydown="if(event.key==='Enter') checkWrite();">
+      ${writeState.checked ? `<div class="writefeedback ${writeState.wasCorrect?'ok':'bad'}">${writeState.wasCorrect?'✅ ¡Correcto!':'❌ Era: '+word[0]}</div>` : ''}
+      <div style="margin-top:14px; display:flex; gap:10px;">
+        ${writeState.checked
+          ? `<button class="resultbtn" style="flex:1;" onclick="nextWrite()">Siguiente →</button>`
+          : `<button class="resultbtn" style="flex:1;" onclick="checkWrite()">Comprobar</button>`}
+        ${speakBtn(word[0])}
+      </div>
+    </div>
+  `;
+  const inp = document.getElementById('write-input');
+  if(inp && !writeState.checked) inp.focus();
+}
+function checkWrite(){
+  const word = writeState.words[writeState.i];
+  const input = document.getElementById('write-input');
+  const val = input ? input.value : '';
+  const ok = normalizeAnswer(val) === normalizeAnswer(word[0]);
+  writeState.checked = true;
+  writeState.wasCorrect = ok;
+  if(ok) writeState.correctCount++;
+  render();
+}
+function nextWrite(){
+  if(writeState.i < writeState.words.length-1){
+    writeState.i++; writeState.checked=false; writeState.wasCorrect=false; render();
+  } else {
+    const pct = writeState.correctCount/writeState.words.length*100;
+    const stars = pct>=90?3:pct>=70?2:pct>=50?1:0;
+    setBlockResult(writeState.blockId, 'write', stars);
+    showResult('¡Escritura completa!', stars>=2?'✍️🏆':'✍️📚', `Escribiste bien ${writeState.correctCount} de ${writeState.words.length}.`, `go({screen:'world', worldId:'${writeState.worldId}'})`, stars);
+  }
+}
+
+/* ============== GRÁFICOS EN VIVO (TradingView) ============== */
+const TV_SYMBOLS = [
+  ['FX:EURUSD','EUR/USD'],['FX:GBPUSD','GBP/USD'],['FX:USDJPY','USD/JPY'],
+  ['OANDA:XAUUSD','Oro (XAU/USD)'],['BINANCE:BTCUSDT','Bitcoin (BTC/USDT)'],
+  ['BINANCE:ETHUSDT','Ethereum (ETH/USDT)'],['NASDAQ:AAPL','Apple (AAPL)'],['SP:SPX','S&P 500']
+];
+function renderCharts(app){
+  const opts = TV_SYMBOLS.map(([sym,label])=>`<option value="${sym}">${label}</option>`).join('');
+  app.innerHTML = `
+    ${topbarHtml(true, "go({screen:'home'})")}
+    <div class="gameheader"><h2>📊 Gráficos en Vivo</h2></div>
+    <div class="chartcontrols">
+      <select id="symbol-select" onchange="changeSymbol(this.value)">${opts}</select>
+    </div>
+    <div id="tv_chart_container" class="tvchart"></div>
+    <p class="chartnote">📌 Gráfico real y en vivo de TradingView. Úsalo para practicar identificar los conceptos que aprendiste — y luego ve a "Practica con el Oso" para que revise tu análisis.</p>
+  `;
+  loadTradingViewWidget(TV_SYMBOLS[0][0]);
+}
+function changeSymbol(sym){ loadTradingViewWidget(sym); }
+function loadTradingViewWidget(symbol){
+  function create(){
+    const el = document.getElementById('tv_chart_container');
+    if(!el) return;
+    el.innerHTML = '';
+    try{
+      new TradingView.widget({
+        autosize: true,
+        symbol: symbol,
+        interval: '60',
+        timezone: 'Etc/UTC',
+        theme: 'dark',
+        style: '1',
+        locale: 'es',
+        toolbar_bg: '#21314D',
+        enable_publishing: false,
+        container_id: 'tv_chart_container'
+      });
+    }catch(e){
+      el.innerHTML = '<div class="chartfallback">No se pudo cargar el gráfico en vivo. Revisa tu conexión a internet.</div>';
+    }
+  }
+  if(window.TradingView){ create(); }
+  else{
+    const s = document.createElement('script');
+    s.src = 'https://s3.tradingview.com/tv.js';
+    s.onload = create;
+    s.onerror = ()=>{ const el=document.getElementById('tv_chart_container'); if(el) el.innerHTML = '<div class="chartfallback">No se pudo cargar TradingView. Revisa tu conexión.</div>'; };
+    document.body.appendChild(s);
+  }
+}
+
+/* ============== PRACTICA CON EL OSO (visión de IA) ============== */
+let chartPracticeState = { imageData:null, imageType:null, concept:'', reasoning:'', loading:false, feedback:null, error:null };
+function allConceptNames(){
+  let names = [];
+  WORLDS.forEach(w=> w.blocks.forEach(b=> b.words.forEach(word=> names.push(word[0]))));
+  return names;
+}
+function renderChartPractice(app){
+  const s = chartPracticeState;
+  const opts = allConceptNames().map(n=>`<option value="${n}" ${s.concept===n?'selected':''}>${n}</option>`).join('');
+  app.innerHTML = `
+    ${topbarHtml(true, "go({screen:'home'})")}
+    <div class="gameheader"><h2>🐻🔍 Practica con el Oso</h2></div>
+    <div class="teachcard" style="text-align:left;">
+      <p class="teachhint" style="margin-bottom:12px;">1. Ve a <b>Gráficos en Vivo</b>, toma una captura de pantalla de algo que reconozcas (o sube cualquier imagen de un gráfico de velas). 2. Súbela aquí. 3. Dinos qué concepto crees ver y por qué. El Oso te da feedback educativo — nunca señales de compra o venta.</p>
+
+      <label class="formlabel">Imagen del gráfico</label>
+      <input type="file" id="chart-image-input" accept="image/*" onchange="handleChartImage(event)">
+      ${s.imageData ? `<img src="data:${s.imageType};base64,${s.imageData}" class="chartpreview">` : ''}
+
+      <label class="formlabel">¿Qué concepto crees identificar?</label>
+      <select id="chart-concept-select">${opts}</select>
+
+      <label class="formlabel">Explica qué ves y por qué</label>
+      <textarea id="chart-reasoning-input" rows="3" placeholder="Ej: Creo que esta vela grande es un order block porque...">${s.reasoning}</textarea>
+
+      <button class="pomobtn" style="width:100%; margin-top:12px; background:var(--ink);" ${s.loading||!s.imageData?'disabled':''} onclick="submitChartPractice()">${s.loading?'🐻 El Oso está mirando...':'Pedir feedback al Oso 🐻'}</button>
+      ${!s.imageData ? `<p style="font-size:11px; color:#8a93ab; text-align:center; margin-top:6px;">Sube una imagen primero</p>` : ''}
+      ${s.feedback ? `<div class="leobubble">🐻 ${s.feedback}</div>` : ''}
+      ${s.error ? `<div class="leobubble leobubble-err">⚠️ ${s.error}</div>` : ''}
+    </div>
+  `;
+}
+function handleChartImage(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const img = new Image();
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    img.onload = ()=>{
+      const maxW = 800;
+      const scale = Math.min(1, maxW/img.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width*scale;
+      canvas.height = img.height*scale;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      chartPracticeState.imageData = dataUrl.split(',')[1];
+      chartPracticeState.imageType = 'image/jpeg';
+      chartPracticeState.feedback = null;
+      chartPracticeState.error = null;
+      render();
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+async function submitChartPractice(){
+  const conceptSel = document.getElementById('chart-concept-select');
+  const reasoningInput = document.getElementById('chart-reasoning-input');
+  const concept = conceptSel ? conceptSel.value : '';
+  const reasoning = reasoningInput ? reasoningInput.value.trim() : '';
+  if(!reasoning){ chartPracticeState.error = 'Escribe tu análisis antes de enviar.'; render(); return; }
+  chartPracticeState.concept = concept;
+  chartPracticeState.reasoning = reasoning;
+  chartPracticeState.loading = true;
+  chartPracticeState.feedback = null;
+  chartPracticeState.error = null;
+  render();
+  try{
+    const response = await fetch("/api/chart-feedback", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        concept, reasoning,
+        imageData: chartPracticeState.imageData,
+        imageType: chartPracticeState.imageType
+      })
+    });
+    const data = await response.json();
+    if(data.error) throw new Error(data.error);
+    chartPracticeState.feedback = data.text || 'El Oso no encontró nada que decir, intenta de nuevo.';
+  }catch(e){
+    chartPracticeState.error = 'El Oso no pudo revisar tu gráfico ahora mismo. Revisa tu conexión e intenta de nuevo.';
+  }
+  chartPracticeState.loading = false;
+  render();
+}
+
+/* ============== DIARIO DE TRADING ============== */
+let journalEntries = [];
+let journalDraft = { symbol:'', direction:'compra', reasonEntry:'', reasonExit:'', result:'aprendizaje', reflection:'' };
+let journalFeedbackFor = null;
+async function loadJournal(){ try{ const v = await storageGet('gga-journal'); if(v) journalEntries = JSON.parse(v); }catch(e){} }
+async function saveJournalData(){ await storageSet('gga-journal', JSON.stringify(journalEntries)); }
+function renderJournal(app){
+  const d = journalDraft;
+  const list = journalEntries.slice().reverse().map(e=>`
+    <div class="journalentry">
+      <div class="je-head">
+        <b>${e.symbol}</b> <span class="je-dir je-${e.direction}">${e.direction === 'compra' ? '📈 Compra' : '📉 Venta'}</span>
+        <span class="je-result je-r-${e.result}">${e.result}</span>
+      </div>
+      <div class="je-date">${e.date}</div>
+      <p><b>Entré porque:</b> ${e.reasonEntry}</p>
+      <p><b>Salí porque:</b> ${e.reasonExit}</p>
+      ${e.reflection ? `<p><b>Reflexión:</b> ${e.reflection}</p>` : ''}
+      ${e.aiFeedback ? `<div class="leobubble">🐻 ${e.aiFeedback}</div>` : `<button class="resultbtn" style="width:100%; margin-top:6px;" onclick="getJournalFeedback('${e.id}')">${journalFeedbackFor===e.id?'🐻 Pensando...':'Pedir reflexión al Oso 🐻'}</button>`}
+      <button class="je-delete" onclick="deleteJournalEntry('${e.id}')">🗑️ Borrar</button>
+    </div>`).join('');
+  app.innerHTML = `
+    ${topbarHtml(true, "go({screen:'home'})")}
+    <div class="gameheader"><h2>📓 Diario de Trading</h2></div>
+    <div class="teachcard" style="text-align:left; margin-bottom:16px;">
+      <p class="teachhint" style="margin-bottom:10px;">Registra tus operaciones de práctica (usa el paper trading gratuito de TradingView, sin dinero real) y reflexiona sobre tu razonamiento, no solo el resultado.</p>
+      <label class="formlabel">Activo</label>
+      <input type="text" id="j-symbol" placeholder="Ej: EUR/USD" value="${d.symbol}">
+      <label class="formlabel">Dirección</label>
+      <select id="j-direction"><option value="compra" ${d.direction==='compra'?'selected':''}>Compra</option><option value="venta" ${d.direction==='venta'?'selected':''}>Venta</option></select>
+      <label class="formlabel">¿Por qué entraste?</label>
+      <textarea id="j-entry" rows="2" placeholder="Ej: Vi una zona de demanda en soporte...">${d.reasonEntry}</textarea>
+      <label class="formlabel">¿Por qué saliste?</label>
+      <textarea id="j-exit" rows="2" placeholder="Ej: Llegó a mi take profit / toqué stop loss...">${d.reasonExit}</textarea>
+      <label class="formlabel">Resultado</label>
+      <select id="j-result">
+        <option value="ganancia" ${d.result==='ganancia'?'selected':''}>Ganancia</option>
+        <option value="pérdida" ${d.result==='pérdida'?'selected':''}>Pérdida</option>
+        <option value="aprendizaje" ${d.result==='aprendizaje'?'selected':''}>Empate / aprendizaje</option>
+      </select>
+      <button class="pomobtn" style="width:100%; margin-top:10px; background:var(--ink);" onclick="addJournalEntry()">Guardar en el diario</button>
+    </div>
+    ${journalEntries.length ? list : '<p class="empty">Todavía no tienes operaciones registradas. ¡Empieza con la primera!</p>'}
+  `;
+}
+function addJournalEntry(){
+  const symbol = document.getElementById('j-symbol').value.trim() || 'Sin nombre';
+  const direction = document.getElementById('j-direction').value;
+  const reasonEntry = document.getElementById('j-entry').value.trim();
+  const reasonExit = document.getElementById('j-exit').value.trim();
+  const result = document.getElementById('j-result').value;
+  if(!reasonEntry){ return; }
+  journalEntries.push({
+    id: 'j'+Date.now(), symbol, direction, reasonEntry, reasonExit, result,
+    date: new Date().toLocaleDateString('es-ES', {day:'numeric', month:'short', year:'numeric'}),
+    aiFeedback: null
+  });
+  journalDraft = { symbol:'', direction:'compra', reasonEntry:'', reasonExit:'', result:'aprendizaje', reflection:'' };
+  saveJournalData();
+  render();
+}
+function deleteJournalEntry(id){
+  journalEntries = journalEntries.filter(e=>e.id!==id);
+  saveJournalData();
+  render();
+}
+async function getJournalFeedback(id){
+  const entry = journalEntries.find(e=>e.id===id);
+  if(!entry) return;
+  journalFeedbackFor = id;
+  render();
+  try{
+    const response = await fetch("/api/leo", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        concept: 'Diario de trading: '+entry.symbol+' ('+entry.direction+', resultado: '+entry.result+')',
+        definition: '',
+        sentence: 'Entré porque: '+entry.reasonEntry+'. Salí porque: '+entry.reasonExit
+      })
+    });
+    const data = await response.json();
+    if(data.error) throw new Error(data.error);
+    entry.aiFeedback = data.text || 'El Oso no encontró nada que decir.';
+  }catch(e){
+    entry.aiFeedback = 'El Oso no pudo revisar esta entrada ahora mismo.';
+  }
+  journalFeedbackFor = null;
+  saveJournalData();
+  render();
+}
+
+/* ============== CALCULADORA DE GESTIÓN DE RIESGO ============== */
+function renderRiskCalc(app){
+  app.innerHTML = `
+    ${topbarHtml(true, "go({screen:'home'})")}
+    <div class="gameheader"><h2>🧮 Calculadora de Gestión de Riesgo</h2></div>
+    <div class="teachcard" style="text-align:left;">
+      <p class="teachhint" style="margin-bottom:10px;">Calcula cuánto deberías arriesgar por operación, según tu propio plan de trading. Esto es solo matemática de gestión de riesgo — no es una recomendación de inversión.</p>
+      <label class="formlabel">Capital total de tu cuenta ($)</label>
+      <input type="number" id="rc-capital" placeholder="Ej: 1000" oninput="calcRisk()">
+      <label class="formlabel">% que estás dispuesto a arriesgar por operación</label>
+      <input type="number" id="rc-percent" placeholder="Ej: 1" value="1" oninput="calcRisk()">
+      <label class="formlabel">Distancia a tu stop loss (en pips o puntos)</label>
+      <input type="number" id="rc-stopdistance" placeholder="Ej: 20" oninput="calcRisk()">
+      <label class="formlabel">Valor de 1 pip/punto por lote estándar ($)</label>
+      <input type="number" id="rc-pipvalue" placeholder="Ej: 10" value="10" oninput="calcRisk()">
+      <div id="rc-result" class="rc-result"></div>
+    </div>
+  `;
+  calcRisk();
+}
+function calcRisk(){
+  const capital = parseFloat(document.getElementById('rc-capital').value) || 0;
+  const percent = parseFloat(document.getElementById('rc-percent').value) || 0;
+  const stopDist = parseFloat(document.getElementById('rc-stopdistance').value) || 0;
+  const pipValue = parseFloat(document.getElementById('rc-pipvalue').value) || 0;
+  const riskAmount = capital * (percent/100);
+  const resultEl = document.getElementById('rc-result');
+  if(capital<=0 || stopDist<=0 || pipValue<=0){
+    resultEl.innerHTML = '<p style="color:#8a93ab; font-weight:700;">Completa todos los campos para ver el cálculo.</p>';
+    return;
+  }
+  const lots = riskAmount / (stopDist * pipValue);
+  resultEl.innerHTML = `
+    <div class="rc-line"><span>Dinero que arriesgas en esta operación:</span><b>$${riskAmount.toFixed(2)}</b></div>
+    <div class="rc-line"><span>Tamaño de posición sugerido:</span><b>${lots.toFixed(2)} lotes</b></div>
+    <p style="font-size:11px; color:#8a93ab; margin-top:8px;">Esto solo calcula el tamaño según TU riesgo definido — no predice si la operación va a ganar o perder.</p>
+  `;
+}
+
+/* ============== GLOSARIO COMPLETO (buscable) ============== */
+function renderGlossary(app){
+  app.innerHTML = `
+    ${topbarHtml(true, "go({screen:'home'})")}
+    <div class="gameheader"><h2>📖 Glosario Completo</h2></div>
+    <input type="text" id="glossary-search" placeholder="Buscar un término..." oninput="filterGlossary()" class="glosearch">
+    <div id="glossary-list"></div>
+  `;
+  filterGlossary();
+}
+function filterGlossary(){
+  const q = (document.getElementById('glossary-search').value || '').toLowerCase();
+  let html = '';
+  WORLDS.forEach(w=>{
+    w.blocks.forEach(b=>{
+      const matches = b.words.filter(word => word[0].toLowerCase().includes(q) || word[1].toLowerCase().includes(q));
+      if(matches.length){
+        html += `<div class="glomodule">${w.icon} ${w.name} · ${b.title}</div>`;
+        matches.forEach(word=>{
+          html += `<div class="gloterm"><b>${word[0]}</b>${speakBtn(word[0])}<p>${word[1]}</p><p class="gloex">“${word[2]}”</p>${diagramHtml(word[0])}</div>`;
+        });
+      }
+    });
+  });
+  document.getElementById('glossary-list').innerHTML = html || '<p class="empty">No se encontraron términos.</p>';
+}
+
+/* ============== RESULT MODAL ============== */
+function showResult(title, icon, msg, backCall, stars){
+  const starsHtml = stars!==undefined ? `<div class="stars">${'⭐'.repeat(stars)}${'☆'.repeat(3-stars)}</div>` : '';
+  const overlay = el(`
+    <div class="overlay">
+      <div class="resultcard">
+        <div style="font-size:40px">${icon}</div>
+        <h2>${title}</h2>
+        ${starsHtml}
+        <p>${msg}</p>
+        <button class="resultbtn">Continuar</button>
+      </div>
+    </div>`);
+  overlay.querySelector('.resultbtn').onclick = ()=>{ overlay.remove(); eval(backCall); };
+  document.body.appendChild(overlay);
+}
+
+/* ============== INIT ============== */
+(async function init(){
+  await Promise.all([loadProgress(), loadSrs(), loadMeta(), loadMnemo(), loadJournal()]);
+  render();
+})();
+</script>
+</body>
+</html>
